@@ -4,14 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-url = os.getenv("url")
-key = os.getenv("key")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-supabase: Client = create_client(url, key)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-try:
-    response = supabase.table("users").select("*").execute()
-    print(response.data)
-
-except Exception as e:
-    print(e)
