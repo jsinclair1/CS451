@@ -1,8 +1,8 @@
 import bcrypt
+import re
 
 def hash_password(password):
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 def verify_password(saved_hash, input_password):
     if isinstance(saved_hash, str):
@@ -13,15 +13,18 @@ def verify_password(saved_hash, input_password):
 
     return bcrypt.checkpw(input_password, saved_hash)
 
-    """
-    print("HERE:", type(password))
-    print(type(password_hash))
-    
-    if isinstance(password, str):
-        password = password.encode("utf-8")
+def password_errors(password: str):
+    errors = []
 
-    if isinstance(password_hash, str):
-        password_hash = password_hash.encode("utf-8")
-    print("Hash: ", type(password_hash))
+    if len(password) < 8:
+        errors.append("at least 8 characters")
+    if not re.search(r"[A-Z]", password):
+        errors.append("one uppercase letter")
+    if not re.search(r"[a-z]", password):
+        errors.append("one lowercase letter")
+    if not re.search(r"\d", password):
+        errors.append("one number")
+    if not re.search(r"[@$!%*?&]", password):
+        errors.append("one special character (@$!%*?&)")
 
-    return bcrypt.checkpw(password, password_hash)"""
+    return errors
