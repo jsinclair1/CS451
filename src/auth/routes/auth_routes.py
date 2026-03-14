@@ -17,6 +17,7 @@ def register():
         return jsonify(message="Input Field Missing"), 400
     
     #Password Checks
+    
     errors = password_errors(password)
     if errors:
         return jsonify({

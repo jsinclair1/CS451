@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import db, bcrypt, login_manager
 from models import User
 from flask_login import login_user, logout_user, login_required
+from routes.auth_helper import password_errors
 import uuid
 
 auth = Blueprint("auth", __name__)
@@ -18,9 +19,20 @@ def register():
     password = data.get("password")
     display_name = data.get("display_name")
 
+    if not email or not password or not display_name:
+        return jsonify(message="Input Field Missing"), 400
+
     # Check if email already exists
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already exists"}), 400
+    
+    #Check Password meets criteria
+    errors = password_errors(password)
+    if errors:
+        return jsonify({
+            "error": "Password does not meet requirements",
+            "requirements": errors
+        }), 400
 
     # Hash the password
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
