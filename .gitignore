@@ -1,3 +1,24 @@
 .vercel
 .env*.local
 .env
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Flask
+instance/
+
+# Database
+*.sqlite3
+*.db
+
+# React
+node_modules/
+dist/
+.env.local
+
+# VSCode
+.vscode/
