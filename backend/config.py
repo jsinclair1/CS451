@@ -1,32 +1,25 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from datetime import timedelta
 
 load_dotenv()
 
-# Fetch variables
-USER = os.getenv("user")
-PASSWORD = os.getenv("password")
-HOST = os.getenv("host")
-PORT = os.getenv("port")
-DBNAME = os.getenv("dbname")
+db_url = os.getenv("DATABASE_URL")
+secret_key = os.getenv("SECRET_KEY")
+
+
+if not db_url:
+    raise ValueError("DATABASE_URL is not set")
+
+if not secret_key:
+    raise ValueError("SECRET_KEY is not set")
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv("url")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = os.getenv("key")
-
-
-
-# Construct the SQLAlchemy connection string
-DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
-
-# Create the SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
-
-# Test the connection
-try:
-    with engine.connect() as connection:
-        print("Connection successful!")
-except Exception as e:
-    print(f"Failed to connect: {e}")
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    JWT_SECRET_KEY = os.getenv("SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
