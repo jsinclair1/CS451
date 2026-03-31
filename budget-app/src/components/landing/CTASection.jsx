@@ -1,17 +1,18 @@
 export default function CTASection({ onNavigate }) {
   return (
-    <section className="cta-section text-center">
+    <section className="section-spacer">
       <div className="container-fluid px-4 px-xl-5">
-        <h3 className="cta-title">Ready to Take Control of Your Finances?</h3>
-        <p className="cta-text mb-4">
-          Join thousands of users who are already tracking their expenses smarter.
-        </p>
-        <div className="d-flex justify-content-center flex-wrap gap-3">
-          <button className="btn btn-light-hero" onClick={() => onNavigate("register")}>
-            Start Your Free Trial
-          </button>
-          <button className="btn btn-outline-hero" onClick={() => onNavigate("dashboard")}>
-            View Demo
+        <div className="cta-section text-center">
+          <h3 className="cta-title mb-3">Start managing your finances today</h3>
+          <p className="cta-text mb-4">
+            Build better spending habits and keep your budget in check.
+          </p>
+
+          <button
+            className="btn btn-light-hero"
+            onClick={() => onNavigate("register")}
+          >
+            Get Started
           </button>
         </div>
       </div>

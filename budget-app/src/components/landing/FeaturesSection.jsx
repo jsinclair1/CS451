@@ -1,76 +1,65 @@
 import {
   BarChart3,
-  RefreshCcw,
-  SquareDashedBottomCode,
-  Zap,
+  Wallet,
+  Receipt,
   Tags,
+  PieChart,
   Smartphone,
 } from "lucide-react";
 
 const featureCards = [
   {
-    title: "Interactive Dashboard",
-    text: "Beautiful charts and real-time statistics to visualize your spending patterns.",
+    title: "Dashboard",
+    text: "Get a quick snapshot of your spending, balances, and budget activity.",
     icon: BarChart3,
-    boxClass: "feature-card card-lilac",
-    iconClass: "icon-purple",
   },
   {
-    title: "Recurring Expenses",
-    text: "Set up automatic recurring expenses that are generated based on your schedule.",
-    icon: RefreshCcw,
-    boxClass: "feature-card card-blue",
-    iconClass: "icon-blue",
+    title: "Budgets",
+    text: "Set limits for categories and stay on track throughout the month.",
+    icon: Wallet,
   },
   {
-    title: "Budget Management",
-    text: "Set budgets for categories and get alerts when you're approaching limits.",
-    icon: SquareDashedBottomCode,
-    boxClass: "feature-card card-green",
-    iconClass: "icon-green",
+    title: "Transactions",
+    text: "Track purchases, expenses, and income in one organized place.",
+    icon: Receipt,
   },
   {
-    title: "Real-time Updates",
-    text: "Instantly refresh your financial picture as transactions and budgets change.",
-    icon: Zap,
-    boxClass: "feature-card card-yellow",
-    iconClass: "icon-yellow",
-  },
-  {
-    title: "Category Tags",
-    text: "Organize expenses with customizable categories and clearer budget tracking.",
+    title: "Categories",
+    text: "Group your spending into categories for cleaner financial tracking.",
     icon: Tags,
-    boxClass: "feature-card card-pink",
-    iconClass: "icon-pink",
   },
   {
-    title: "Mobile Responsive",
-    text: "Track expenses on any device with a polished responsive web application layout.",
+    title: "Insights",
+    text: "Understand where your money goes and identify spending trends faster.",
+    icon: PieChart,
+  },
+  {
+    title: "Mobile",
+    text: "Use the app smoothly across desktop, tablet, and phone screens.",
     icon: Smartphone,
-    boxClass: "feature-card card-indigo",
-    iconClass: "icon-indigo",
   },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="section-spacer bg-white">
+    <section id="features" className="section-spacer features-section">
       <div className="container-fluid px-4 px-xl-5">
-        <div className="text-center">
-          <h2 className="section-title">Powerful Features</h2>
+        <div className="text-center mb-5">
+          <h2 className="section-title">Features</h2>
           <p className="section-subtitle">
-            Everything you need to manage your expenses efficiently
+            Simple and effective tools for managing your finances.
           </p>
         </div>
 
-        <div className="row g-4 feature-grid">
+        <div className="row g-4">
           {featureCards.map((card) => {
             const Icon = card.icon;
+
             return (
               <div className="col-md-6 col-xl-4" key={card.title}>
-                <div className={card.boxClass}>
-                  <div className={`feature-icon ${card.iconClass}`}>
-                    <Icon size={18} />
+                <div className="feature-card h-100">
+                  <div className="feature-icon">
+                    <Icon size={20} />
                   </div>
                   <h5>{card.title}</h5>
                   <p>{card.text}</p>

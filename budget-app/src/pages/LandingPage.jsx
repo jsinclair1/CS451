@@ -8,9 +8,11 @@ export default function LandingPage({ onNavigate }) {
   return (
     <div className="app-shell">
       <LandingNavbar onNavigate={onNavigate} />
-      <HeroSection onNavigate={onNavigate} />
-      <FeaturesSection />
-      <CTASection onNavigate={onNavigate} />
+      <main>
+        <HeroSection onNavigate={onNavigate} />
+        <FeaturesSection />
+        <CTASection onNavigate={onNavigate} />
+      </main>
       <LandingFooter />
     </div>
   );

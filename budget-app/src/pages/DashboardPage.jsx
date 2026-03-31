@@ -14,14 +14,25 @@ import {
   BadgeDollarSign,
   Tag,
   Repeat,
-  Circle,
+  TriangleAlert,
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 const summaryCards = [
   {
     title: "Total Spent",
     value: "$3,393.31",
-    subtext: "Under budget by $1606.69",
+    subtext: "Under budget by $1,606.69",
     borderClass: "summary-border-purple",
     iconClass: "summary-icon-purple",
     icon: DollarSign,
@@ -30,7 +41,7 @@ const summaryCards = [
     title: "Monthly Budget",
     value: "$5,000.00",
     subtext: "67.9% used",
-    rightText: "$1606.69 left",
+    rightText: "$1,606.69 left",
     borderClass: "summary-border-blue",
     iconClass: "summary-icon-blue",
     icon: BadgeDollarSign,
@@ -54,18 +65,89 @@ const summaryCards = [
   },
 ];
 
-const categoryLegend = [
-  { name: "Housing", percent: "35.4% of total", amount: "$1,200.00", color: "#6366f1" },
-  { name: "Education", percent: "23.6% of total", amount: "$800.00", color: "#f97316" },
-  { name: "Shopping", percent: "15.2% of total", amount: "$515.97", color: "#ec4899" },
+const monthlyTrendData = [
+  { month: "May", amount: 2200 },
+  { month: "Jun", amount: 2600 },
+  { month: "Jul", amount: 2450 },
+  { month: "Aug", amount: 2900 },
+  { month: "Sep", amount: 3100 },
+  { month: "Oct", amount: 3393 },
+];
+
+const spendingData = [
+  { name: "Housing", value: 1200, color: "#6366f1" },
+  { name: "Education", value: 800, color: "#f97316" },
+  { name: "Shopping", value: 516, color: "#ec4899" },
+  { name: "Food", value: 420, color: "#ef4444" },
+  { name: "Transport", value: 220, color: "#f59e0b" },
+  { name: "Utilities", value: 237, color: "#3b82f6" },
+];
+
+const topCategoryRows = [
+  {
+    name: "Housing",
+    percent: "35.4% of total",
+    amount: "$1,200.00",
+    color: "#6366f1",
+  },
+  {
+    name: "Education",
+    percent: "23.6% of total",
+    amount: "$800.00",
+    color: "#f97316",
+  },
+  {
+    name: "Shopping",
+    percent: "15.2% of total",
+    amount: "$515.97",
+    color: "#ec4899",
+  },
 ];
 
 const recentExpenses = [
-  { name: "manunuzi", date: "Oct 19, 2025", amount: "-$200.00", color: "#f59e0b" },
-  { name: "Internet Service", date: "Oct 18, 2025", amount: "-$59.99", color: "#60a5fa" },
-  { name: "Rent Payment", date: "Oct 18, 2025", amount: "-$1,200.00", color: "#818cf8" },
-  { name: "Spotify Premium", date: "Oct 18, 2025", amount: "-$9.99", color: "#60a5fa" },
-  { name: "Netflix Subscription", date: "Oct 18, 2025", amount: "-$15.99", color: "#60a5fa" },
+  {
+    name: "Manunuzi",
+    date: "Oct 19, 2025",
+    amount: "-$200.00",
+    color: "#f59e0b",
+  },
+  {
+    name: "Internet Service",
+    date: "Oct 18, 2025",
+    amount: "-$59.99",
+    color: "#60a5fa",
+  },
+  {
+    name: "Rent Payment",
+    date: "Oct 18, 2025",
+    amount: "-$1,200.00",
+    color: "#818cf8",
+  },
+  {
+    name: "Spotify Premium",
+    date: "Oct 18, 2025",
+    amount: "-$9.99",
+    color: "#60a5fa",
+  },
+  {
+    name: "Netflix Subscription",
+    date: "Oct 18, 2025",
+    amount: "-$15.99",
+    color: "#60a5fa",
+  },
+];
+
+const alerts = [
+  {
+    title: "Suspicious Transaction Alert",
+    description:
+      "A transaction over $2,000 was detected. Please review recent account activity.",
+  },
+  {
+    title: "Budget Warning",
+    description:
+      "Your Education category is getting close to its monthly limit.",
+  },
 ];
 
 const sidebarItems = [
@@ -73,7 +155,7 @@ const sidebarItems = [
   { key: "transactions", label: "Expenses", icon: Receipt },
   { key: "budgets", label: "Budgets", icon: Wallet },
   { key: "categories", label: "Categories", icon: Tags },
-  { key: "profile-settings", label: "Notification Preference", icon: Bell },
+  { key: "profile", label: "Profile", icon: Bell },
 ];
 
 export default function DashboardPage({ onNavigate }) {
@@ -89,20 +171,17 @@ export default function DashboardPage({ onNavigate }) {
           <div className="dashboard-sidebar-label">Platform</div>
 
           <div className="d-grid gap-2">
-            {sidebarItems.map((item, index) => {
+            {sidebarItems.map((item) => {
               const Icon = item.icon;
-              const active = index === 0;
+              const active = item.key === "dashboard";
+
               return (
                 <button
                   key={item.key}
                   className={`btn dashboard-nav-btn ${active ? "active" : ""}`}
                   onClick={() => {
                     if (item.key === "dashboard") return;
-                    if (item.key === "transactions") onNavigate("transactions");
-                    if (item.key === "budgets") onNavigate("budgets");
-                    if (item.key === "categories") onNavigate("categories");
-                    if (item.key === "reports") onNavigate("reports");
-                    if (item.key === "profile") onNavigate("profile");
+                    onNavigate(item.key);
                   }}
                 >
                   <span className="d-flex align-items-center gap-2">
@@ -141,7 +220,9 @@ export default function DashboardPage({ onNavigate }) {
           <div className="dashboard-hero">
             <div>
               <h1 className="dashboard-hero-title">Dashboard</h1>
-              <p className="dashboard-hero-subtitle">Welcome back, Demo User!</p>
+              <p className="dashboard-hero-subtitle">
+                Welcome back, Demo User!
+              </p>
             </div>
 
             <div className="d-flex align-items-center gap-2">
@@ -158,6 +239,7 @@ export default function DashboardPage({ onNavigate }) {
           <div className="row g-4 mb-4">
             {summaryCards.map((card) => {
               const Icon = card.icon;
+
               return (
                 <div className="col-md-6 col-xl-3" key={card.title}>
                   <div className={`dashboard-summary-card ${card.borderClass}`}>
@@ -166,6 +248,7 @@ export default function DashboardPage({ onNavigate }) {
                         <div className="dashboard-summary-title">{card.title}</div>
                         <div className="dashboard-summary-value">{card.value}</div>
                       </div>
+
                       <div className={`dashboard-summary-icon ${card.iconClass}`}>
                         <Icon size={14} />
                       </div>
@@ -177,6 +260,7 @@ export default function DashboardPage({ onNavigate }) {
                           <span>{card.subtext}</span>
                           <span>{card.rightText}</span>
                         </div>
+
                         <div className="progress dashboard-progress">
                           <div
                             className="progress-bar dashboard-progress-bar"
@@ -194,57 +278,61 @@ export default function DashboardPage({ onNavigate }) {
           </div>
 
           <div className="row g-4 mb-4">
+            <div className="col-xl-12">
+              <div className="dashboard-panel h-100">
+                <div className="d-flex align-items-center gap-2 mb-3">
+                  <TriangleAlert size={18} color="#dc2626" />
+                  <h5 className="dashboard-panel-title mb-0">
+                    Alerts & Notifications
+                  </h5>
+                </div>
+
+                <div className="d-grid gap-3">
+                  {alerts.map((alert) => (
+                    <div
+                      key={alert.title}
+                      className="d-flex align-items-start gap-3 p-3 rounded-4"
+                      style={{
+                        background: "#fef2f2",
+                        border: "1px solid #fecaca",
+                      }}
+                    >
+                      <TriangleAlert
+                        size={18}
+                        color="#dc2626"
+                        style={{ marginTop: 2 }}
+                      />
+                      <div>
+                        <div className="fw-semibold">{alert.title}</div>
+                        <div className="small text-secondary">
+                          {alert.description}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row g-4 mb-4">
             <div className="col-xl-6">
               <div className="dashboard-panel h-100">
                 <h5 className="dashboard-panel-title">6-Month Spending Trend</h5>
+
                 <div className="dashboard-chart-box">
-                  <svg viewBox="0 0 520 320" className="w-100 h-100">
-                    <defs>
-                      <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(168,85,247,0.28)" />
-                        <stop offset="100%" stopColor="rgba(168,85,247,0.04)" />
-                      </linearGradient>
-                    </defs>
-
-                    {[60, 140, 220, 300, 380, 460].map((x) => (
-                      <line key={x} x1={x} y1="25" x2={x} y2="280" stroke="#e9e9ef" strokeWidth="1" />
-                    ))}
-                    {[40, 90, 140, 190, 240].map((y) => (
-                      <line key={y} x1="40" y1={y} x2="480" y2={y} stroke="#e9e9ef" strokeWidth="1" />
-                    ))}
-
-                    <path
-                      d="M 60 205 C 95 198, 110 192, 140 188
-                         S 205 170, 220 162
-                         S 285 182, 300 190
-                         S 365 205, 380 198
-                         S 440 115, 460 50
-                         L 460 280 L 60 280 Z"
-                      fill="url(#areaFill)"
-                    />
-                    <path
-                      d="M 60 205 C 95 198, 110 192, 140 188
-                         S 205 170, 220 162
-                         S 285 182, 300 190
-                         S 365 205, 380 198
-                         S 440 115, 460 50"
-                      fill="none"
-                      stroke="#a855f7"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-
-                    {[
-                      [60, 205],
-                      [140, 188],
-                      [220, 162],
-                      [300, 190],
-                      [380, 198],
-                      [460, 50],
-                    ].map(([cx, cy], i) => (
-                      <circle key={i} cx={cx} cy={cy} r="5" fill="#a855f7" />
-                    ))}
-                  </svg>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyTrendData}>
+                      <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                      <YAxis axisLine={false} tickLine={false} />
+                      <Tooltip />
+                      <Bar
+                        dataKey="amount"
+                        radius={[8, 8, 0, 0]}
+                        fill="#7c3aed"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
@@ -252,23 +340,36 @@ export default function DashboardPage({ onNavigate }) {
             <div className="col-xl-6">
               <div className="dashboard-panel h-100">
                 <h5 className="dashboard-panel-title">Spending by Category</h5>
+
                 <div className="dashboard-donut-wrap">
-                  <div className="dashboard-donut-chart"></div>
+                  <div className="dashboard-real-donut">
+                    <ResponsiveContainer width="100%" height={240}>
+                      <PieChart>
+                        <Pie
+                          data={spendingData}
+                          dataKey="value"
+                          nameKey="name"
+                          innerRadius={55}
+                          outerRadius={85}
+                          paddingAngle={3}
+                        >
+                          {spendingData.map((entry, index) => (
+                            <Cell key={index} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+
                   <div className="dashboard-donut-legend">
-                    {[
-                      ["Housing", "#6366f1"],
-                      ["Education", "#f97316"],
-                      ["Shopping", "#ec4899"],
-                      ["Food & Dining", "#ef4444"],
-                      ["Transportation", "#f59e0b"],
-                      ["Entertainment", "#8b5cf6"],
-                      ["Utilities", "#3b82f6"],
-                      ["Personal Care", "#9333ea"],
-                      ["Healthcare", "#22c55e"],
-                    ].map(([label, color]) => (
-                      <div key={label} className="dashboard-legend-item">
-                        <span className="dashboard-legend-dot" style={{ background: color }}></span>
-                        <span>{label}</span>
+                    {spendingData.map((item) => (
+                      <div key={item.name} className="dashboard-legend-item">
+                        <span
+                          className="dashboard-legend-dot"
+                          style={{ background: item.color }}
+                        ></span>
+                        <span>{item.name}</span>
                       </div>
                     ))}
                   </div>
@@ -283,21 +384,38 @@ export default function DashboardPage({ onNavigate }) {
                 <h5 className="dashboard-panel-title">Top Spending Categories</h5>
 
                 <div className="d-grid gap-3 mt-3">
-                  {categoryLegend.map((item) => (
+                  {topCategoryRows.map((item) => (
                     <div key={item.name} className="dashboard-category-row">
                       <div className="d-flex align-items-center gap-3">
                         <div
                           className="dashboard-category-icon"
-                          style={{ background: `${item.color}18`, color: item.color }}
+                          style={{
+                            background: `${item.color}18`,
+                            color: item.color,
+                          }}
                         >
-                          <Circle size={10} fill={item.color} stroke={item.color} />
+                          <span
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: "50%",
+                              background: item.color,
+                              display: "inline-block",
+                            }}
+                          ></span>
                         </div>
+
                         <div>
                           <div className="fw-semibold">{item.name}</div>
-                          <div className="small text-secondary">{item.percent}</div>
+                          <div className="small text-secondary">
+                            {item.percent}
+                          </div>
                         </div>
                       </div>
-                      <div className="fw-semibold text-secondary">{item.amount}</div>
+
+                      <div className="fw-semibold text-secondary">
+                        {item.amount}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -308,7 +426,12 @@ export default function DashboardPage({ onNavigate }) {
               <div className="dashboard-panel h-100">
                 <div className="d-flex justify-content-between align-items-center">
                   <h5 className="dashboard-panel-title mb-0">Recent Expenses</h5>
-                  <button className="btn btn-link dashboard-view-link">View All</button>
+                  <button
+                    className="btn btn-link dashboard-view-link"
+                    onClick={() => onNavigate("transactions")}
+                  >
+                    View All
+                  </button>
                 </div>
 
                 <div className="d-grid gap-2 mt-3">
@@ -319,14 +442,26 @@ export default function DashboardPage({ onNavigate }) {
                           className="dashboard-expense-icon"
                           style={{ background: `${item.color}20` }}
                         >
-                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: item.color, display: "inline-block" }}></span>
+                          <span
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: "50%",
+                              background: item.color,
+                              display: "inline-block",
+                            }}
+                          ></span>
                         </div>
+
                         <div>
                           <div className="fw-semibold">{item.name}</div>
                           <div className="small text-secondary">{item.date}</div>
                         </div>
                       </div>
-                      <div className="fw-semibold text-secondary">{item.amount}</div>
+
+                      <div className="fw-semibold text-secondary">
+                        {item.amount}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -336,7 +471,10 @@ export default function DashboardPage({ onNavigate }) {
 
           <div className="row g-3">
             <div className="col-md-4">
-              <button className="btn dashboard-action-card dashboard-action-purple w-100">
+              <button
+                className="btn dashboard-action-card dashboard-action-purple w-100"
+                onClick={() => onNavigate("add-transaction")}
+              >
                 <Plus size={18} />
                 <span>
                   <strong>Add Expense</strong>
@@ -344,6 +482,7 @@ export default function DashboardPage({ onNavigate }) {
                 </span>
               </button>
             </div>
+
             <div className="col-md-4">
               <button className="btn dashboard-action-card dashboard-action-blue w-100">
                 <RefreshCcw size={18} />
@@ -353,8 +492,12 @@ export default function DashboardPage({ onNavigate }) {
                 </span>
               </button>
             </div>
+
             <div className="col-md-4">
-              <button className="btn dashboard-action-card dashboard-action-green w-100">
+              <button
+                className="btn dashboard-action-card dashboard-action-green w-100"
+                onClick={() => onNavigate("categories")}
+              >
                 <Tags size={18} />
                 <span>
                   <strong>Categories</strong>

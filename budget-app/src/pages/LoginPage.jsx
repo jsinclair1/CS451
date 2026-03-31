@@ -1,4 +1,4 @@
-import { Wallet, ArrowLeft } from "lucide-react";
+import { Wallet, ArrowLeft, Mail, Lock, ShieldCheck } from "lucide-react";
 
 export default function LoginPage({ onBack, onSuccess, onNavigate }) {
   return (
@@ -48,6 +48,10 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                   Back to Home
                 </button>
 
+                <div className="auth-form-icon mb-3">
+                  <ShieldCheck size={18} />
+                </div>
+
                 <h2 className="fw-bold mb-2 auth-form-title">Login</h2>
                 <p className="text-secondary mb-4 auth-form-subtitle">
                   Enter your account details to access your budgeting dashboard.
@@ -61,20 +65,26 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                 >
                   <div className="mb-3">
                     <label className="form-label fw-semibold">Email Address</label>
-                    <input
-                      type="email"
-                      className="form-control auth-input"
-                      placeholder="name@gmail.com"
-                    />
+                    <div className="auth-input-wrap">
+                      <Mail size={18} className="auth-input-icon" />
+                      <input
+                        type="email"
+                        className="form-control auth-input"
+                        placeholder="name@gmail.com"
+                      />
+                    </div>
                   </div>
 
                   <div className="mb-3">
                     <label className="form-label fw-semibold">Password</label>
-                    <input
-                      type="password"
-                      className="form-control auth-input"
-                      placeholder="••••••••"
-                    />
+                    <div className="auth-input-wrap">
+                      <Lock size={18} className="auth-input-icon" />
+                      <input
+                        type="password"
+                        className="form-control auth-input"
+                        placeholder="••••••••"
+                      />
+                    </div>
                   </div>
 
                   <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -84,7 +94,10 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                         type="checkbox"
                         id="rememberMe"
                       />
-                      <label className="form-check-label text-secondary" htmlFor="rememberMe">
+                      <label
+                        className="form-check-label text-secondary"
+                        htmlFor="rememberMe"
+                      >
                         Remember me
                       </label>
                     </div>
@@ -103,10 +116,10 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
 
                   <div className="text-center text-secondary">
                     Don&apos;t have an account?{" "}
-                   <button
-                     type="button"
-                     className="btn btn-link p-0 text-decoration-none auth-link-btn fw-semibold"
-                     onClick={() => onNavigate("register")}
+                    <button
+                      type="button"
+                      className="btn btn-link p-0 text-decoration-none auth-link-btn fw-semibold"
+                      onClick={() => onNavigate("register")}
                     >
                       Register
                     </button>
