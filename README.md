@@ -2,7 +2,12 @@
 
 This is the frontend user interface for the ExpenseApp capstone project. It is a single-page budgeting dashboard built with React and Bootstrap.
 
-## 🚀 Installation & Setup
+## Prerequisites
+Before you begin, ensure you have the following installed on your machine:
+* **[Node.js](https://nodejs.org/)**: You must download and install Node.js to get the `npm` tool required for the installation step below. (Version 16.0 or higher is recommended).
+* **[Git](https://git-scm.com/)**: Required to clone the repository.
+
+## Installation & Setup
 
 **1. Clone the repository**
 \`\`\`bash
