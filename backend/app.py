@@ -1,7 +1,7 @@
 from flask import Flask
 from extensions import db, migrate, login_manager, bcrypt, cors
 from config import Config
-from routes.auth import auth
+from auth.auth import auth
 
 def create_app():
     app = Flask(__name__)
