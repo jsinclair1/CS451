@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import db, bcrypt, login_manager
 from models import User
 from flask_login import login_user, logout_user, login_required
-from auth_helper import password_errors
+from auth.auth_helper import password_errors
 import uuid
 
 auth = Blueprint("auth", __name__)
