@@ -3,7 +3,7 @@ import Sidebar from '../components/landing/Sidebar';
 
 const transactions = [
   {
-    date: "Oct 19, 2025",
+    date: "Mar 19, 2026",
     day: "Sunday",
     category: "Education",
     title: "manunuzi",
@@ -12,7 +12,7 @@ const transactions = [
     color: "chip-orange",
   },
   {
-    date: "Oct 18, 2025",
+    date: "Mar 18, 2026",
     day: "Saturday",
     category: "Utilities",
     title: "Internet Service",
@@ -21,7 +21,7 @@ const transactions = [
     color: "chip-blue",
   },
   {
-    date: "Oct 18, 2025",
+    date: "Mar 18, 2026",
     day: "Saturday",
     category: "Housing",
     title: "Rent Payment",
@@ -30,7 +30,7 @@ const transactions = [
     color: "chip-purple",
   },
   {
-    date: "Oct 18, 2025",
+    date: "Mar 18, 2026",
     day: "Saturday",
     category: "Utilities",
     title: "Spotify Premium",
@@ -39,7 +39,7 @@ const transactions = [
     color: "chip-blue",
   },
   {
-    date: "Oct 18, 2025",
+    date: "Mar 18, 2026",
     day: "Saturday",
     category: "Utilities",
     title: "Netflix Subscription",
@@ -48,7 +48,7 @@ const transactions = [
     color: "chip-blue",
   },
   {
-    date: "Oct 18, 2025",
+    date: "Mar 18, 2026",
     day: "Saturday",
     category: "Education",
     title: "shop",
@@ -57,7 +57,7 @@ const transactions = [
     color: "chip-orange",
   },
   {
-    date: "Oct 17, 2025",
+    date: "Mar 17, 2026",
     day: "Friday",
     category: "Personal Care",
     title: "Gym Membership",
@@ -66,7 +66,7 @@ const transactions = [
     color: "chip-pink",
   },
   {
-    date: "Oct 17, 2025",
+    date: "Mar 17, 2026",
     day: "Friday",
     category: "Food & Dining",
     title: "Fast Food",
@@ -75,7 +75,7 @@ const transactions = [
     color: "chip-red",
   },
   {
-    date: "Oct 16, 2025",
+    date: "Mar 16, 2026",
     day: "Thursday",
     category: "Transportation",
     title: "Parking Fee",
@@ -84,7 +84,7 @@ const transactions = [
     color: "chip-yellow",
   },
   {
-    date: "Oct 16, 2025",
+    date: "Mar 16, 2026",
     day: "Thursday",
     category: "Food & Dining",
     title: "Coffee Shop",
@@ -93,7 +93,7 @@ const transactions = [
     color: "chip-red",
   },
   {
-    date: "Oct 15, 2025",
+    date: "Mar 15, 2026",
     day: "Wednesday",
     category: "Food & Dining",
     title: "Restaurant Dinner",
@@ -102,7 +102,7 @@ const transactions = [
     color: "chip-red",
   },
   {
-    date: "Oct 14, 2025",
+    date: "Mar 14, 2026",
     day: "Tuesday",
     category: "Transportation",
     title: "Uber Ride",
@@ -111,7 +111,7 @@ const transactions = [
     color: "chip-yellow",
   },
   {
-    date: "Oct 13, 2025",
+    date: "Mar 13, 2026",
     day: "Monday",
     category: "Shopping",
     title: "Online Shopping",
@@ -120,7 +120,7 @@ const transactions = [
     color: "chip-magenta",
   },
   {
-    date: "Oct 13, 2025",
+    date: "Mar 13, 2026",
     day: "Monday",
     category: "Food & Dining",
     title: "Grocery Shopping",
@@ -129,7 +129,7 @@ const transactions = [
     color: "chip-red",
   },
   {
-    date: "Oct 12, 2025",
+    date: "Mar 12, 2026",
     day: "Sunday",
     category: "Transportation",
     title: "Gas Station",
@@ -193,12 +193,12 @@ export default function TransactionsPage({ onNavigate }) {
 
                 <div className="col-md-6 col-xl-3">
                   <label className="form-label transactions-label">Start Date</label>
-                  <input type="text" className="form-control transactions-input" value="01/10/2025" readOnly />
+                  <input type="text" className="form-control transactions-input" value="01/10/2026" readOnly />
                 </div>
 
                 <div className="col-md-6 col-xl-3">
                   <label className="form-label transactions-label">End Date</label>
-                  <input type="text" className="form-control transactions-input" value="31/10/2025" readOnly />
+                  <input type="text" className="form-control transactions-input" value="4/31/26" readOnly />
                 </div>
               </div>
             </div>
