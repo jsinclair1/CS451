@@ -1,4 +1,5 @@
 import { Pencil, Lock } from "lucide-react";
+import Sidebar from '../components/landing/Sidebar';
 
 const colors = [
   "#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e",
@@ -19,45 +20,7 @@ const existingCategories = [
 export default function CategoriesPage({ onNavigate }) {
   return (
     <div className="dashboard-page">
-      <div className="dashboard-sidebar">
-        <div>
-          <div className="d-flex align-items-center gap-2 dashboard-brand">
-            <div className="dashboard-brand-badge">💳</div>
-            <span>ExpenseApp</span>
-          </div>
-
-          <div className="dashboard-sidebar-label">Platform</div>
-
-          <div className="d-grid gap-2">
-            <button className="btn dashboard-nav-btn" onClick={() => onNavigate("dashboard")}>
-              Dashboard
-            </button>
-            <button className="btn dashboard-nav-btn" onClick={() => onNavigate("transactions")}>
-              Expenses
-            </button>
-            <button className="btn dashboard-nav-btn" onClick={() => onNavigate("budgets")}>
-              Budgets
-            </button>
-            <button className="btn dashboard-nav-btn active">Categories</button>
-            <button className="btn dashboard-nav-btn">Notification Preference</button>
-          </div>
-        </div>
-
-        <div>
-          <div className="d-grid gap-2 mb-3">
-            <button className="btn dashboard-bottom-link">Repository</button>
-            <button className="btn dashboard-bottom-link">Documentation</button>
-          </div>
-
-          <div className="dashboard-user-box">
-            <div className="dashboard-user-avatar">DU</div>
-            <div>
-              <div className="dashboard-user-name">Demo User</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <Sidebar onNavigate={onNavigate} activeTab="categories" />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="categories-hero">

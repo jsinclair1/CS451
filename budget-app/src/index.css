@@ -495,6 +495,9 @@ body {
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .dashboard-brand {

@@ -17,6 +17,8 @@ import {
   Circle,
 } from "lucide-react";
 
+import Sidebar from '../components/landing/Sidebar';
+
 const summaryCards = [
   {
     title: "Total Spent",
@@ -68,74 +70,10 @@ const recentExpenses = [
   { name: "Netflix Subscription", date: "Oct 18, 2025", amount: "-$15.99", color: "#60a5fa" },
 ];
 
-const sidebarItems = [
-  { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { key: "transactions", label: "Expenses", icon: Receipt },
-  { key: "budgets", label: "Budgets", icon: Wallet },
-  { key: "categories", label: "Categories", icon: Tags },
-  { key: "profile-settings", label: "Notification Preference", icon: Bell },
-];
-
 export default function DashboardPage({ onNavigate }) {
   return (
     <div className="dashboard-page">
-      <div className="dashboard-sidebar">
-        <div>
-          <div className="d-flex align-items-center gap-2 dashboard-brand">
-            <div className="dashboard-brand-badge">💳</div>
-            <span>ExpenseApp</span>
-          </div>
-
-          <div className="dashboard-sidebar-label">Platform</div>
-
-          <div className="d-grid gap-2">
-            {sidebarItems.map((item, index) => {
-              const Icon = item.icon;
-              const active = index === 0;
-              return (
-                <button
-                  key={item.key}
-                  className={`btn dashboard-nav-btn ${active ? "active" : ""}`}
-                  onClick={() => {
-                    if (item.key === "dashboard") return;
-                    if (item.key === "transactions") onNavigate("transactions");
-                    if (item.key === "budgets") onNavigate("budgets");
-                    if (item.key === "categories") onNavigate("categories");
-                    if (item.key === "reports") onNavigate("reports");
-                    if (item.key === "profile") onNavigate("profile");
-                  }}
-                >
-                  <span className="d-flex align-items-center gap-2">
-                    <Icon size={16} />
-                    <span>{item.label}</span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <div className="d-grid gap-2 mb-3">
-            <button className="btn dashboard-bottom-link">
-              <FolderGit2 size={15} />
-              <span>Repository</span>
-            </button>
-            <button className="btn dashboard-bottom-link">
-              <BookOpen size={15} />
-              <span>Documentation</span>
-            </button>
-          </div>
-
-          <div className="dashboard-user-box">
-            <div className="dashboard-user-avatar">DU</div>
-            <div>
-              <div className="dashboard-user-name">Demo User</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <Sidebar onNavigate={onNavigate} activeTab="dashboard" />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="dashboard-hero">
