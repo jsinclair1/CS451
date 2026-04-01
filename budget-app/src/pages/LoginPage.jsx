@@ -60,11 +60,6 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                   <h1 className="auth-title mb-3">
                     Log in to continue tracking your finances
                   </h1>
-
-                  <p className="auth-subtitle mb-4">
-                    Access your dashboard, monitor budgets, review transactions,
-                    and stay on top of your financial goals.
-                  </p>
                 </div>
 
                 <div className="auth-info-box mt-4">
