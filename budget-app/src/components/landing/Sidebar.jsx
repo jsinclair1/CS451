@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Receipt, Wallet, Tags } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, Tags, LogOut } from "lucide-react";
 
 const sidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -43,6 +43,20 @@ export default function Sidebar({ onNavigate, activeTab }) {
 
       {/* ONLY the Demo User box remains here at the bottom */}
       <div>
+        {/* 2. Add the Logout Button here */}
+        <div className="d-grid gap-2 mb-2">
+          <button 
+            className="btn dashboard-nav-btn logout-btn" 
+            onClick={() => onNavigate("logout")}
+            style={{ color: '#ff4d4d' }} 
+          >
+            <span className="d-flex align-items-center gap-2">
+              <LogOut size={16} />
+              <span>Logout</span>
+            </span>
+          </button>
+        </div>
+        
         <div className="dashboard-user-box">
           <div className="dashboard-user-avatar">DU</div>
           <div>

@@ -18,15 +18,6 @@ export default function LandingNavbar({ onNavigate }) {
         <div className="collapse navbar-collapse show">
           <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             <li className="nav-item">
-              <a className="nav-link text-secondary fw-medium" href="#features">Features</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-secondary fw-medium" href="#how-it-works">How It Works</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-secondary fw-medium" href="#pricing">Pricing</a>
-            </li>
-            <li className="nav-item">
               <button
                 className="btn btn-link text-secondary fw-medium text-decoration-none"
                 onClick={() => onNavigate("login")}
@@ -36,7 +27,7 @@ export default function LandingNavbar({ onNavigate }) {
             </li>
             <li className="nav-item">
               <button className="btn btn-brand" onClick={() => onNavigate("register")}>
-                Get Started
+                Register
               </button>
             </li>
           </ul>
