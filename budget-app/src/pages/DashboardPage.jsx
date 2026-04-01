@@ -86,7 +86,7 @@ export default function DashboardPage({ onNavigate }) {
               <button className="btn dashboard-month-btn">
                 <ChevronLeft size={16} />
               </button>
-              <span className="dashboard-month-text">October 2025</span>
+              <span className="dashboard-month-text">March 2026</span>
               <button className="btn dashboard-month-btn">
                 <ChevronRight size={16} />
               </button>
