@@ -1,5 +1,5 @@
 from flask import Flask
-from extensions import db, migrate, login_manager, bcrypt, cors
+from extensions import db, migrate, login_manager, bcrypt, cors, jwt
 from config import Config
 from auth.auth import auth
 '''
@@ -17,6 +17,7 @@ def create_app():
     login_manager.init_app(app)
     bcrypt.init_app(app)
     cors.init_app(app, supports_credentials=True)
+    jwt.init_app(app)
 
     # Register blueprints
     app.register_blueprint(auth)

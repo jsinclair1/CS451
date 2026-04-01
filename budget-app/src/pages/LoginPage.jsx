@@ -1,6 +1,45 @@
+import { useState } from "react";
 import { Wallet, ArrowLeft } from "lucide-react";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function LoginPage({ onBack, onSuccess, onNavigate }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed. Please try again.");
+        return;
+      }
+
+      // Store token and user in localStorage
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      onSuccess(data.user);
+    } catch (err) {
+      setError("Unable to connect to the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page d-flex align-items-center justify-content-center">
       <div className="container-fluid px-4 px-xl-5">
@@ -53,18 +92,22 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                   Enter your account details to access your budgeting dashboard.
                 </p>
 
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    onSuccess();
-                  }}
-                >
+                {error && (
+                  <div className="alert alert-danger py-2 mb-3" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label className="form-label fw-semibold">Email Address</label>
                     <input
                       type="email"
                       className="form-control auth-input"
                       placeholder="name@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
 
@@ -74,6 +117,9 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                       type="password"
                       className="form-control auth-input"
                       placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                   </div>
 
@@ -97,16 +143,20 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
                     </button>
                   </div>
 
-                  <button type="submit" className="btn btn-brand w-100 py-3 mb-3">
-                    Login
+                  <button
+                    type="submit"
+                    className="btn btn-brand w-100 py-3 mb-3"
+                    disabled={loading}
+                  >
+                    {loading ? "Logging in..." : "Login"}
                   </button>
 
                   <div className="text-center text-secondary">
                     Don&apos;t have an account?{" "}
-                   <button
-                     type="button"
-                     className="btn btn-link p-0 text-decoration-none auth-link-btn fw-semibold"
-                     onClick={() => onNavigate("register")}
+                    <button
+                      type="button"
+                      className="btn btn-link p-0 text-decoration-none auth-link-btn fw-semibold"
+                      onClick={() => onNavigate("register")}
                     >
                       Register
                     </button>
