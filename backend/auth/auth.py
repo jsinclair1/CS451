@@ -1,15 +1,15 @@
 from flask import Blueprint, request, jsonify
-from extensions import db, bcrypt, login_manager
+from extensions import db, bcrypt
 from models import User
-from flask_login import login_user, logout_user, login_required
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt_identity
+)
 from auth.auth_helper import password_errors
 import uuid
 
 auth = Blueprint("auth", __name__)
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(uuid.UUID(user_id))
 
 # Register
 @auth.route("/api/register", methods=["POST"])
@@ -20,13 +20,13 @@ def register():
     display_name = data.get("display_name")
 
     if not email or not password or not display_name:
-        return jsonify(message="Input Field Missing"), 400
+        return jsonify({"message": "Input Field Missing"}), 400
 
     # Check if email already exists
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already exists"}), 400
-    
-    #Check Password meets criteria
+
+    # Check password meets criteria
     errors = password_errors(password)
     if errors:
         return jsonify({
@@ -48,12 +48,16 @@ def register():
 
     return jsonify({"message": "User created successfully"}), 201
 
+
 # Login
 @auth.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
 
     # Find user
     user = User.query.filter_by(email=email).first()
@@ -62,9 +66,12 @@ def login():
     if not user or not bcrypt.check_password_hash(user.password_hash, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    login_user(user)
+    # Issue JWT — identity is the user's UUID as a string
+    access_token = create_access_token(identity=str(user.id))
+
     return jsonify({
         "message": "Logged in successfully",
+        "access_token": access_token,
         "user": {
             "id": str(user.id),
             "email": user.email,
@@ -72,9 +79,28 @@ def login():
         }
     }), 200
 
-# Logout
+
+# Logout — JWT is stateless; logout is handled client-side by deleting the token.
+# This endpoint exists so the frontend has a consistent call to make on logout.
 @auth.route("/api/logout", methods=["POST"])
-@login_required
+@jwt_required()
 def logout():
-    logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+
+# Me — verify token and return current user info
+@auth.route("/api/me", methods=["GET"])
+@jwt_required()
+def me():
+    user_id = get_jwt_identity()
+    user = User.query.get(uuid.UUID(user_id))
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": str(user.id),
+        "email": user.email,
+        "display_name": user.display_name,
+        "created_at": user.created_at.isoformat() if user.created_at else None
+    }), 200
