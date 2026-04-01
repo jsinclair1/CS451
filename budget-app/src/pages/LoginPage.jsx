@@ -34,7 +34,7 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
 
       onSuccess(data.user);
     } catch (err) {
-      setError("Unable to connect to the server. Try again later.);
+      setError("Unable to connect to the server. Try again later.");
     } finally {
       setLoading(false);
     }
