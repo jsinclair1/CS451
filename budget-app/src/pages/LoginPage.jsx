@@ -34,7 +34,7 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
 
       onSuccess(data.user);
     } catch (err) {
-      setError("Unable to connect to the server. Please try again.");
+      setError("Unable to connect to the server. Trying to reach: ${API_BASE_URL}");
     } finally {
       setLoading(false);
     }
