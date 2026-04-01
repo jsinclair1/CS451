@@ -26,7 +26,7 @@ export default function AddTransactionPage({ onNavigate }) {
 
             <div className="col-md-6">
               <label className="form-label transactions-label">Date *</label>
-              <input type="text" className="form-control transactions-input" value="19/10/2025" readOnly />
+              <input type="text" className="form-control transactions-input" value="4/1/26" readOnly />
             </div>
 
             <div className="col-12">
