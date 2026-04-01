@@ -71,11 +71,6 @@ export default function RegisterPage({ onBack, onSuccess }) {
                   <h1 className="auth-title mb-3">
                     Start managing your finances today
                   </h1>
-
-                  <p className="auth-subtitle">
-                    Create an account to begin tracking expenses, managing budgets,
-                    and analyzing your financial habits.
-                  </p>
                 </div>
 
                 <div className="auth-info-box mt-4">
