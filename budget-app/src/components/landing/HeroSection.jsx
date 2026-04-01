@@ -4,19 +4,15 @@ export default function HeroSection({ onNavigate }) {
       <div className="container-fluid px-4 px-xl-5">
         <div className="row align-items-center g-5">
           <div className="col-lg-5 col-xl-4">
-            <div className="hero-badge mb-4">✨ Powered by your capstone stack</div>
+            <div>
+
+            </div>
 
             <h1 className="hero-title mb-4">Take Control of Your Finances Today</h1>
 
-            <p className="hero-subtitle mb-4">
-              Track expenses, manage budgets, and achieve your financial goals
-              with a polished full-stack budgeting web application built with
-              React, Bootstrap, Python, and PostgreSQL.
-            </p>
-
             <div className="d-flex flex-wrap gap-3 mb-5">
               <button className="btn btn-light-hero" onClick={() => onNavigate("register")}>
-                Start Free Trial
+                Register
               </button>
               <button className="btn btn-outline-hero" onClick={() => onNavigate("dashboard")}>
                 Learn More
@@ -28,7 +24,7 @@ export default function HeroSection({ onNavigate }) {
             <div className="hero-card">
               <div className="d-flex justify-content-between align-items-center mb-3 px-1">
                 <h5 className="mb-0 fw-bold text-dark">This Month</h5>
-                <span className="text-secondary small">October 2025</span>
+                <span className="text-secondary small">March 2026</span>
               </div>
 
               <div className="hero-spend-box mb-3">

@@ -58,9 +58,6 @@ export default function FeaturesSection() {
       <div className="container-fluid px-4 px-xl-5">
         <div className="text-center">
           <h2 className="section-title">Powerful Features</h2>
-          <p className="section-subtitle">
-            Everything you need to manage your expenses efficiently
-          </p>
         </div>
 
         <div className="row g-4 feature-grid">

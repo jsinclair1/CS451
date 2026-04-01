@@ -542,6 +542,11 @@ body {
   color: white;
 }
 
+.logout-btn:hover {
+  background: rgba(255, 77, 77, 0.1) !important;
+  color: #ff3333 !important;
+}
+
 .dashboard-bottom-link {
   color: #c9ced9;
   background: transparent;

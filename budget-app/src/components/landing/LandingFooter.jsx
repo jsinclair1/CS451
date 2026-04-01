@@ -12,7 +12,6 @@ export default function LandingFooter() {
               </span>
               ExpenseApp
             </div>
-            <p className="footer-brand-text mb-0">Smart expense tracking for everyone.</p>
           </div>
 
           <div className="col-6 col-lg-3">
@@ -41,10 +40,6 @@ export default function LandingFooter() {
               <a className="footer-link" href="#security">Security</a>
             </div>
           </div>
-        </div>
-
-        <div className="text-center footer-divider small">
-          © 2025 ExpenseApp. Built with React and Bootstrap for your capstone project.
         </div>
       </div>
     </footer>
