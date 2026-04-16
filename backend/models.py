@@ -63,3 +63,20 @@ class Transaction(db.Model):
     description = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
+
+class PlaidItem(db.Model):
+    __tablename__ = "plaid_items"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(64), nullable=False, unique=True, index=True)
+    item_id = db.Column(db.String(255), nullable=False)
+    access_token = db.Column(db.Text, nullable=False)
+    cursor = db.Column(db.Text, nullable=True)
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now(),
+        onupdate=db.func.now(),
+        nullable=False,
+    )

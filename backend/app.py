@@ -2,6 +2,9 @@ from flask import Flask
 from extensions import db, migrate, login_manager, bcrypt, cors
 from config import Config
 from routes.auth import auth
+from routes.plaid import plaid_bp
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +19,7 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(auth)
+    app.register_blueprint(plaid_bp)
 
     return app
 
