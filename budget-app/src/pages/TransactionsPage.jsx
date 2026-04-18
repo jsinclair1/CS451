@@ -1,145 +1,103 @@
+import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import Sidebar from '../components/landing/Sidebar';
-
-const transactions = [
-  {
-    date: "Mar 19, 2026",
-    day: "Sunday",
-    category: "Education",
-    title: "manunuzi",
-    description: "sample description",
-    amount: "$200.00",
-    color: "chip-orange",
-  },
-  {
-    date: "Mar 18, 2026",
-    day: "Saturday",
-    category: "Utilities",
-    title: "Internet Service",
-    description: "Home internet connection",
-    amount: "$59.99",
-    color: "chip-blue",
-  },
-  {
-    date: "Mar 18, 2026",
-    day: "Saturday",
-    category: "Housing",
-    title: "Rent Payment",
-    description: "Monthly apartment rent",
-    amount: "$1,200.00",
-    color: "chip-purple",
-  },
-  {
-    date: "Mar 18, 2026",
-    day: "Saturday",
-    category: "Utilities",
-    title: "Spotify Premium",
-    description: "Music streaming service",
-    amount: "$9.99",
-    color: "chip-blue",
-  },
-  {
-    date: "Mar 18, 2026",
-    day: "Saturday",
-    category: "Utilities",
-    title: "Netflix Subscription",
-    description: "Monthly streaming subscription",
-    amount: "$15.99",
-    color: "chip-blue",
-  },
-  {
-    date: "Mar 18, 2026",
-    day: "Saturday",
-    category: "Education",
-    title: "shop",
-    description: "—",
-    amount: "$600.00",
-    color: "chip-orange",
-  },
-  {
-    date: "Mar 17, 2026",
-    day: "Friday",
-    category: "Personal Care",
-    title: "Gym Membership",
-    description: "Monthly gym fee",
-    amount: "$45.00",
-    color: "chip-pink",
-  },
-  {
-    date: "Mar 17, 2026",
-    day: "Friday",
-    category: "Food & Dining",
-    title: "Fast Food",
-    description: "Quick lunch",
-    amount: "$23.45",
-    color: "chip-red",
-  },
-  {
-    date: "Mar 16, 2026",
-    day: "Thursday",
-    category: "Transportation",
-    title: "Parking Fee",
-    description: "Downtown parking",
-    amount: "$15.00",
-    color: "chip-yellow",
-  },
-  {
-    date: "Mar 16, 2026",
-    day: "Thursday",
-    category: "Food & Dining",
-    title: "Coffee Shop",
-    description: "Morning coffee and pastry",
-    amount: "$12.50",
-    color: "chip-red",
-  },
-  {
-    date: "Mar 15, 2026",
-    day: "Wednesday",
-    category: "Food & Dining",
-    title: "Restaurant Dinner",
-    description: "Dinner at Italian restaurant",
-    amount: "$78.50",
-    color: "chip-red",
-  },
-  {
-    date: "Mar 14, 2026",
-    day: "Tuesday",
-    category: "Transportation",
-    title: "Uber Ride",
-    description: "Ride to downtown",
-    amount: "$18.75",
-    color: "chip-yellow",
-  },
-  {
-    date: "Mar 13, 2026",
-    day: "Monday",
-    category: "Shopping",
-    title: "Online Shopping",
-    description: "Amazon purchases",
-    amount: "$89.99",
-    color: "chip-magenta",
-  },
-  {
-    date: "Mar 13, 2026",
-    day: "Monday",
-    category: "Food & Dining",
-    title: "Grocery Shopping",
-    description: "Weekly groceries from Whole Foods",
-    amount: "$145.67",
-    color: "chip-red",
-  },
-  {
-    date: "Mar 12, 2026",
-    day: "Sunday",
-    category: "Transportation",
-    title: "Gas Station",
-    description: "Full tank of gas",
-    amount: "$65.00",
-    color: "chip-yellow",
-  },
-];
+import Sidebar from "../components/landing/Sidebar";
+import EditTransactionModal from "../components/EditTransactionModal";
+import { api } from "../api";
 
 export default function TransactionsPage({ onNavigate }) {
+  const [transactions, setTransactions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Filters
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  // Edit modal
+  const [editingTransaction, setEditingTransaction] = useState(null);
+
+  const fetchTransactions = async (currentPage = 1) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ page: currentPage, per_page: 15 });
+      if (search) params.append("search", search);
+      if (categoryFilter) params.append("category_id", categoryFilter);
+      if (startDate) params.append("start_date", startDate);
+      if (endDate) params.append("end_date", endDate);
+
+      const res = await api.get(`/api/transactions?${params.toString()}`);
+      const data = await res.json();
+      setTransactions(data.transactions);
+      setTotalPages(data.pages);
+      setTotal(data.total);
+      setPage(data.page);
+    } catch (err) {
+      setError("Failed to load transactions.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await api.get("/api/categories");
+      const data = await res.json();
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to load categories");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchTransactions();
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this transaction?")) return;
+    try {
+      await api.delete(`/api/transactions/${id}`);
+      fetchTransactions(page);
+    } catch (err) {
+      setError("Failed to delete transaction.");
+    }
+  };
+
+  const handleFilter = () => {
+    fetchTransactions(1);
+  };
+
+  const handleEditSaved = () => {
+    setEditingTransaction(null);
+    fetchTransactions(page);
+  };
+
+  const formatDate = (isoDate) => {
+    const d = new Date(isoDate);
+    return {
+      date: d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      day: d.toLocaleDateString("en-US", { weekday: "long" }),
+    };
+  };
+
+  const chipColors = [
+    "chip-orange", "chip-blue", "chip-purple", "chip-pink",
+    "chip-red", "chip-yellow", "chip-magenta"
+  ];
+
+  const getCategoryColor = (categoryId) => {
+    const index = categories.findIndex((c) => c.id === categoryId);
+    return chipColors[index % chipColors.length] || "chip-blue";
+  };
+
   return (
     <div className="dashboard-page">
       <Sidebar onNavigate={onNavigate} activeTab="transactions" />
@@ -150,7 +108,6 @@ export default function TransactionsPage({ onNavigate }) {
               <h1 className="transactions-page-title">Expenses</h1>
               <p className="transactions-page-subtitle">Manage and track your expenses</p>
             </div>
-
             <button
               className="btn btn-brand d-inline-flex align-items-center gap-2"
               onClick={() => onNavigate("add-transaction")}
@@ -164,8 +121,8 @@ export default function TransactionsPage({ onNavigate }) {
             <div className="transactions-panel mb-4">
               <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h5 className="transactions-panel-title mb-0">Filters</h5>
-                <button className="btn btn-link text-decoration-none transactions-show-link">
-                  Show Filters
+                <button className="btn btn-link text-decoration-none transactions-show-link" onClick={handleFilter}>
+                  Apply Filters
                 </button>
               </div>
 
@@ -176,32 +133,48 @@ export default function TransactionsPage({ onNavigate }) {
                     type="text"
                     className="form-control transactions-input"
                     placeholder="Search expenses..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
 
                 <div className="col-md-6 col-xl-3">
                   <label className="form-label transactions-label">Category</label>
-                  <select className="form-select transactions-input">
-                    <option>All Categories</option>
-                    <option>Housing</option>
-                    <option>Utilities</option>
-                    <option>Food & Dining</option>
-                    <option>Transportation</option>
-                    <option>Shopping</option>
+                  <select
+                    className="form-select transactions-input"
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="col-md-6 col-xl-3">
                   <label className="form-label transactions-label">Start Date</label>
-                  <input type="text" className="form-control transactions-input" value="01/10/2026" readOnly />
+                  <input
+                    type="date"
+                    className="form-control transactions-input"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
                 </div>
 
                 <div className="col-md-6 col-xl-3">
                   <label className="form-label transactions-label">End Date</label>
-                  <input type="text" className="form-control transactions-input" value="4/31/26" readOnly />
+                  <input
+                    type="date"
+                    className="form-control transactions-input"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
+
+            {error && <div className="alert alert-danger">{error}</div>}
 
             <div className="transactions-table-panel">
               <div className="table-responsive">
@@ -216,49 +189,82 @@ export default function TransactionsPage({ onNavigate }) {
                       <th>ACTIONS</th>
                     </tr>
                   </thead>
-
                   <tbody>
-                    {transactions.map((item, index) => (
-                      <tr key={index}>
-                        <td>
-                          <div className="fw-semibold">{item.date}</div>
-                          <div className="transactions-day-text">{item.day}</div>
-                        </td>
-
-                        <td>
-                          <span className={`transaction-chip ${item.color}`}>{item.category}</span>
-                        </td>
-
-                        <td className="fw-medium">{item.title}</td>
-                        <td className="transactions-description">{item.description}</td>
-                        <td className="fw-semibold">{item.amount}</td>
-
-                        <td>
-                          <div className="d-flex align-items-center gap-2">
-                            <button className="btn transaction-icon-btn">
-                              <Pencil size={14} />
-                            </button>
-                            <button className="btn transaction-icon-btn delete">
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </td>
+                    {loading ? (
+                      <tr>
+                        <td colSpan="6" className="text-center py-4">Loading...</td>
                       </tr>
-                    ))}
+                    ) : transactions.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center py-4">No transactions found.</td>
+                      </tr>
+                    ) : (
+                      transactions.map((item) => {
+                        const { date, day } = formatDate(item.txn_date);
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <div className="fw-semibold">{date}</div>
+                              <div className="transactions-day-text">{day}</div>
+                            </td>
+                            <td>
+                              <span className={`transaction-chip ${getCategoryColor(item.category_id)}`}>
+                                {item.category_name}
+                              </span>
+                            </td>
+                            <td className="fw-medium">{item.title}</td>
+                            <td className="transactions-description">{item.description || "—"}</td>
+                            <td className="fw-semibold">${parseFloat(item.amount).toFixed(2)}</td>
+                            <td>
+                              <div className="d-flex align-items-center gap-2">
+                                <button
+                                  className="btn transaction-icon-btn"
+                                  onClick={() => setEditingTransaction(item)}
+                                >
+                                  <Pencil size={14} />
+                                </button>
+                                <button
+                                  className="btn transaction-icon-btn delete"
+                                  onClick={() => handleDelete(item.id)}
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
 
               <div className="transactions-footer">
-                <div className="transactions-results-text">Showing 1 to 15 of 22 results</div>
-
+                <div className="transactions-results-text">
+                  Showing {transactions.length} of {total} results
+                </div>
                 <div className="transactions-pagination">
-                  <button className="btn transactions-page-btn">
+                  <button
+                    className="btn transactions-page-btn"
+                    disabled={page <= 1}
+                    onClick={() => fetchTransactions(page - 1)}
+                  >
                     <ChevronLeft size={15} />
                   </button>
-                  <button className="btn transactions-page-btn active">1</button>
-                  <button className="btn transactions-page-btn">2</button>
-                  <button className="btn transactions-page-btn">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      className={`btn transactions-page-btn ${p === page ? "active" : ""}`}
+                      onClick={() => fetchTransactions(p)}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    className="btn transactions-page-btn"
+                    disabled={page >= totalPages}
+                    onClick={() => fetchTransactions(page + 1)}
+                  >
                     <ChevronRight size={15} />
                   </button>
                 </div>
@@ -267,6 +273,15 @@ export default function TransactionsPage({ onNavigate }) {
           </div>
         </div>
       </div>
+
+      {editingTransaction && (
+        <EditTransactionModal
+          transaction={editingTransaction}
+          categories={categories}
+          onClose={() => setEditingTransaction(null)}
+          onSaved={handleEditSaved}
+        />
+      )}
     </div>
   );
 }

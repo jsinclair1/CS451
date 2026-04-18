@@ -23,6 +23,7 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
 
       const data = await res.json();
 
+
       if (!res.ok) {
         setError(data.error || "Login failed. Please try again.");
         return;
