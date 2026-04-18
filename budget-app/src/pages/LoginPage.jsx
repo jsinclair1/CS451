@@ -22,7 +22,6 @@ export default function LoginPage({ onBack, onSuccess, onNavigate }) {
       });
 
       const data = await res.json();
-      console.log("Login response:", data); // add this line
 
 
       if (!res.ok) {

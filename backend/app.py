@@ -3,10 +3,7 @@ from extensions import db, migrate, login_manager, bcrypt, cors, jwt
 from config import Config
 from auth.auth import auth
 from routes.transactions import transactions_bp
-'''
-from routes.budgets import budgets_bp
-from routes.user import user_bp
-'''
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -22,10 +19,6 @@ def create_app():
     # Register blueprints
     app.register_blueprint(auth)
     app.register_blueprint(transactions_bp)
-    '''
-    app.register_blueprint(budgets_bp)
-    app.register_blueprint(user_bp)
-    '''
     return app
     
 app = create_app()
