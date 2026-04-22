@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Wallet, ArrowLeft } from "lucide-react";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5050";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function LoginPage({ onBack, onSuccess, onNavigate }) {
   const [email, setEmail] = useState("");
