@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { X, Check, FileText, RefreshCcw } from "lucide-react";
 import { api } from "../api";
+import PlacesAutocompleteMap from "../places_autocomplete";
+
 
 export default function AddTransactionPage({ onNavigate }) {
   const [categories, setCategories] = useState([]);
@@ -138,6 +140,12 @@ export default function AddTransactionPage({ onNavigate }) {
                 onChange={(e) => setDescription(e.target.value)}
               ></textarea>
             </div>
+
+            <div className="col-12">
+              <label className="form-label transactions-label">Location</label>
+              <PlacesAutocompleteMap />
+            </div>
+
           </div>
         </div>
 
