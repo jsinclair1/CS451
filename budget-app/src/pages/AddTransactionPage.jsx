@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { X, Check, FileText, RefreshCcw } from "lucide-react";
 import { api } from "../api";
+import PlacesAutocompleteMap from "../places_autocomplete";
+
+
+const VITE_GOOGLE_MAPS_API_KEY= import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+console.log(VITE_GOOGLE_MAPS_API_KEY)
 
 export default function AddTransactionPage({ onNavigate }) {
   const [categories, setCategories] = useState([]);
@@ -138,6 +143,34 @@ export default function AddTransactionPage({ onNavigate }) {
                 onChange={(e) => setDescription(e.target.value)}
               ></textarea>
             </div>
+
+            <div className="col-12">
+              <label className="form-label transactions-label">Location</label>
+              <PlacesAutocompleteMap />
+              {/*
+                <gmp-map
+                  zoom="12"
+                  center="37.4220656,-122.0840897"
+                  map-id="DEMO_MAP_ID">
+                  <gmp-basic-place-autocomplete slot="control-inline-start-block-start"></gmp-basic-place-autocomplete>
+                </gmp-map>
+              <gmp-place-details-compact
+                orientation="horizontal"
+                style="
+                    width: 400px;
+                    display: none;
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    background-color: transparent;
+                    color-scheme: light;
+                ">
+            <gmp-place-details-place-request></gmp-place-details-place-request>
+            <gmp-place-standard-content></gmp-place-standard-content>
+          </gmp-place-details-compact>
+          */}
+            </div>
+
           </div>
         </div>
 
