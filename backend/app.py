@@ -4,6 +4,7 @@ from config import Config
 from auth.auth import auth
 from routes.transactions import transactions_bp
 from routes.budgets import budgets_bp
+from routes.dashboard import dashboard_bp
 
 def create_app():
     app = Flask(__name__)
@@ -21,6 +22,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(transactions_bp)
     app.register_blueprint(budgets_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
     
