@@ -14,6 +14,7 @@ export default function AddTransactionPage({ onNavigate }) {
   const [txnType, setTxnType] = useState("one-time");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -45,6 +46,8 @@ export default function AddTransactionPage({ onNavigate }) {
         txn_date: txnDate,
         category_id: categoryId,
         description: description,
+        location_name: location?.name ?? null,
+        location_address: location?.address ?? null,
       });
 
       const data = await res.json();
@@ -143,7 +146,25 @@ export default function AddTransactionPage({ onNavigate }) {
 
             <div className="col-12">
               <label className="form-label transactions-label">Location</label>
-              <PlacesAutocompleteMap />
+              <PlacesAutocompleteMap onLocationSelect={setLocation} />
+              <input
+                type="text"
+                readOnly
+                style={{
+                  marginTop: "10px",
+                  display: "block",
+                  width: "100%",
+                  padding: "8px 12px",
+                  fontSize: "14px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  background: "#f9f9f9",
+                  color: "#374151",
+                  boxSizing: "border-box",
+                }}
+                value={location?.address ?? ""}
+                placeholder="No location selected"
+              />
             </div>
 
           </div>

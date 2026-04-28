@@ -96,6 +96,7 @@ def get_transactions():
                 "amount": float(t.amount),
                 "txn_date": t.txn_date.isoformat(),
                 "description": t.description
+                "location": t.location if t.location else None,
             } for t in paginated.items
         ],
         "total": paginated.total,
@@ -117,6 +118,7 @@ def create_transaction():
     title = data.get("title", "")
     description = data.get("description") or None
     txn_type = data.get("type", "expense")
+    location = data.get("location")
 
     if txn_type not in ["income", "expense"]:
         txn_type = "expense"
@@ -135,7 +137,8 @@ def create_transaction():
         title=title,
         amount=amount,
         txn_date=datetime.strptime(txn_date, "%Y-%m-%d").date(),
-        description=description
+        description=description,
+        location=location
     )
     db.session.add(transaction)
     db.session.commit()
@@ -179,6 +182,8 @@ def update_transaction(transaction_id):
         if txn_type not in ["income", "expense"]:
             txn_type = "expense"
         transaction.type = txn_type
+    if "location" in data:
+        transaction.location = data["location"]
 
     db.session.commit()
 
