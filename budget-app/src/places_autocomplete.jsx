@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { loadGoogleMaps } from "./loadGoogleMaps";
 
-export default function PlacesAutocompleteMap() {
+export default function PlacesAutocompleteMap({ onLocationSelect }) {
   const mapContainerRef = useRef(null);
   const autocompleteContainerRef = useRef(null);
   const [error, setError] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
 
   useEffect(() => {
     let map;
@@ -54,12 +55,18 @@ export default function PlacesAutocompleteMap() {
         autocompleteContainerRef.current.innerHTML = "";
         autocompleteContainerRef.current.appendChild(autocompleteEl);
 
-        autocompleteEl.addEventListener("gmp-select", async (event) => {
+        const onPlaceSelect = async (event) => {
           try {
-            const placeId = event.place?.id;
-            if (!placeId) return;
+            // New Places API commonly provides placePrediction on gmp-select
+            const placePrediction = event.placePrediction;
+            const placeFromPrediction = placePrediction?.toPlace?.();
 
-            const place = new Place({ id: placeId });
+            // Fallback for other payload shapes
+            const place = placeFromPrediction || event.place;
+            if (!place) {
+              console.warn("No place found in selection event:", event);
+              return;
+            }
 
             await place.fetchFields({
               fields: [
@@ -70,7 +77,10 @@ export default function PlacesAutocompleteMap() {
               ],
             });
 
-            if (!place.location) return;
+            if (!place.location) {
+              console.warn("Selected place has no location:", place);
+              return;
+            }
 
             marker.position = place.location;
 
@@ -96,24 +106,29 @@ export default function PlacesAutocompleteMap() {
               </div>
             `);
 
-            infoWindow.open({
-              map,
-              anchor: marker,
-            });
+            infoWindow.open({ map, anchor: marker });
 
-            // Optional: log/store selected place data for sending to Flask later
-            console.log("Selected place:", {
-              placeId,
+            setSelectedAddress(address);
+
+            const locationData = {
               name,
               address,
-              lat: place.location.lat(),
-              lng: place.location.lng(),
-            });
+            };
+
+            console.log("Selected location data:", locationData);
+
+            if (onLocationSelect) {
+              onLocationSelect(locationData);
+            }
           } catch (err) {
-            console.error(err);
+            console.error("Place select handler failed:", err);
             setError("Failed to load selected place details.");
           }
-        });
+        };
+
+        // Keep gmp-select (current API) and add compatibility listener
+        autocompleteEl.addEventListener("gmp-select", onPlaceSelect);
+        autocompleteEl.addEventListener("gmp-placeselect", onPlaceSelect);
 
         // Keep autocomplete bias near current map center.
         map.addListener("idle", () => {
