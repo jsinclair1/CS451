@@ -95,7 +95,7 @@ def get_transactions():
                 "title": t.title,
                 "amount": float(t.amount),
                 "txn_date": t.txn_date.isoformat(),
-                "description": t.description
+                "description": t.description,
                 "location": t.location if t.location else None,
             } for t in paginated.items
         ],
