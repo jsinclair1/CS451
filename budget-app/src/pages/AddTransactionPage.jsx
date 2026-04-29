@@ -50,12 +50,18 @@ export default function AddTransactionPage({ onNavigate }) {
         location_address: location?.address ?? null,
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        setError(data.error || "Failed to save transaction.");
+        let errorMsg = "Failed to save transaction.";
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
+          errorMsg = data.error || errorMsg;
+        }
+        setError(errorMsg);
         return;
       }
+
+      await res.json();
 
       onNavigate("transactions");
     } catch (err) {
