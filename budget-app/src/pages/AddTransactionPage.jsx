@@ -59,6 +59,7 @@ export default function AddTransactionPage({ onNavigate }) {
 
       onNavigate("transactions");
     } catch (err) {
+      console.error("Transaction submission failed:", err);
       setError("Unable to connect to the server.");
     } finally {
       setLoading(false);
