@@ -5,6 +5,7 @@ import EditTransactionModal from "../components/EditTransactionModal";
 import { api } from "../api";
 
 export default function TransactionsPage({ onNavigate }) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +101,7 @@ export default function TransactionsPage({ onNavigate }) {
 
   return (
     <div className="dashboard-page">
-      <Sidebar onNavigate={onNavigate} activeTab="transactions" />
+      <Sidebar onNavigate={onNavigate} activeTab="transactions" user={user} />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="transactions-header">

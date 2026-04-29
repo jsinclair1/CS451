@@ -14,6 +14,7 @@ import EditBudgetModal from "../components/EditBudgetModal";
 import { api } from "../api";
 
 export default function BudgetsPage({ onNavigate }) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth()); // 0-indexed
@@ -95,7 +96,7 @@ export default function BudgetsPage({ onNavigate }) {
 
   return (
     <div className="dashboard-page">
-      <Sidebar onNavigate={onNavigate} activeTab="budgets" />
+      <Sidebar onNavigate={onNavigate} activeTab="budgets" user={user} />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="dashboard-hero">

@@ -170,50 +170,6 @@ export default function AddTransactionPage({ onNavigate }) {
           </div>
         </div>
 
-        <div className="add-transaction-card">
-          <h5 className="add-section-title">Expense Type</h5>
-
-          <div className="row g-3">
-            <div className="col-md-6">
-              <div
-                className={`expense-type-card ${txnType === "one-time" ? "active" : ""}`}
-                onClick={() => setTxnType("one-time")}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="d-flex align-items-center gap-3">
-                  <div className="expense-type-icon purple">
-                    <FileText size={18} />
-                  </div>
-                  <div>
-                    <div className="fw-semibold">One-time</div>
-                    <div className="expense-type-subtext">Single expense</div>
-                  </div>
-                </div>
-                {txnType === "one-time" && <Check size={16} className="expense-check-icon" />}
-              </div>
-            </div>
-
-            <div className="col-md-6">
-              <div
-                className={`expense-type-card ${txnType === "recurring" ? "active" : ""}`}
-                onClick={() => setTxnType("recurring")}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="d-flex align-items-center gap-3">
-                  <div className="expense-type-icon gray">
-                    <RefreshCcw size={18} />
-                  </div>
-                  <div>
-                    <div className="fw-semibold">Recurring</div>
-                    <div className="expense-type-subtext">Repeating expense</div>
-                  </div>
-                </div>
-                {txnType === "recurring" && <Check size={16} className="expense-check-icon" />}
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="add-transaction-actions">
           <button className="btn add-cancel-btn" onClick={() => onNavigate("transactions")}>
             Cancel

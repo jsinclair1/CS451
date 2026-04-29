@@ -483,8 +483,7 @@ body {
 .dashboard-page {
   min-height: 100vh;
   background: #151515;
-  display: grid;
-  grid-template-columns: 270px 1fr;
+  padding-left: 65px; /* Creates a mini 'rail' on the left for the hamburger menu */
 }
 
 .dashboard-sidebar {
@@ -495,9 +494,16 @@ body {
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  /* Off-canvas positioning */
   height: 100vh;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 270px;
+  z-index: 1000;
+  transform: translateX(-100%); /* Hides it off-screen by default */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dashboard-brand {
@@ -655,7 +661,6 @@ body {
 .summary-border-purple { border-left-color: #a855f7; }
 .summary-border-blue { border-left-color: #3b82f6; }
 .summary-border-green { border-left-color: #22c55e; }
-.summary-border-orange { border-left-color: #f97316; }
 
 .dashboard-summary-title {
   color: #6b7280;
@@ -843,11 +848,7 @@ body {
 
 @media (max-width: 991.98px) {
   .dashboard-page {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-sidebar {
-    display: none;
+    padding-left: 0; /* Removes the 65px rail on small screens */
   }
 
   .dashboard-hero {
@@ -1505,4 +1506,43 @@ body {
 
 .hover-primary:hover {
   color: #16a34a !important;
+}
+
+/* Triggers the slide-in animation */
+.dashboard-sidebar.open {
+  transform: translateX(0);
+}
+
+/* The floating hamburger button */
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 1.25rem;
+  left: 12px;
+  z-index: 900;
+  background: #141518;
+  color: #d4d7de;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #1f2126;
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* The dark blur overlay behind the sidebar */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 998;
+  backdrop-filter: blur(2px);
+  cursor: pointer;
 }

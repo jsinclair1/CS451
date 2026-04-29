@@ -1,69 +1,107 @@
-import React from 'react';
-import { LayoutDashboard, Receipt, Wallet, Tags, LogOut } from "lucide-react";
+import React, { useState } from 'react';
+// 1. Import Menu and X from lucide-react
+import { LayoutDashboard, Receipt, Wallet, Tags, LogOut, Menu, X } from "lucide-react";
 
 const sidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { key: "transactions", label: "Expenses", icon: Receipt },
-  { key: "budgets", label: "Budgets", icon: Wallet },
   { key: "categories", label: "Categories", icon: Tags },
+  { key: "budgets", label: "Budgets", icon: Wallet },
+  { key: "transactions", label: "Expenses", icon: Receipt },
 ];
 
-export default function Sidebar({ onNavigate, activeTab }) {
+export default function Sidebar({ onNavigate, activeTab, user }) {
+  // 2. Add state to hide the sidebar by default
+  const [isOpen, setIsOpen] = useState(false);
+
+  const displayName = user?.display_name || user?.name || "Demo User";
+  const initials = displayName
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="dashboard-sidebar">
-      <div>
-        <div className="d-flex align-items-center gap-2 dashboard-brand">
-          <div className="dashboard-brand-badge">💳</div>
-          <span>ExpenseApp</span>
+    <>
+      {/* 3. The Floating Hamburger Menu Button */}
+      <button
+        className="sidebar-toggle-btn"
+        onClick={() => setIsOpen(true)}
+        style={{ display: isOpen ? 'none' : 'grid' }}
+      >
+        <Menu size={20} />
+      </button>
+
+      {/* 4. Dark backdrop overlay (click to close) */}
+      {isOpen && (
+        <div className="sidebar-backdrop" onClick={() => setIsOpen(false)}></div>
+      )}
+
+      {/* 5. The Sidebar itself (adds the 'open' class dynamically) */}
+      <div className={`dashboard-sidebar ${isOpen ? "open" : ""}`}>
+        <div>
+          {/* Header Row with Brand and Close Button */}
+          <div className="d-flex justify-content-between align-items-center px-1 mb-3">
+            <div className="d-flex align-items-center gap-2 dashboard-brand" style={{ padding: '0.4rem 0' }}>
+              <div className="dashboard-brand-badge">💳</div>
+              <span>ExpenseApp</span>
+            </div>
+            <button
+              className="btn p-1 d-flex text-secondary"
+              onClick={() => setIsOpen(false)}
+              style={{ border: 'none', background: 'transparent' }}
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="dashboard-sidebar-label">Platform</div>
+
+          <div className="d-grid gap-2">
+            {sidebarItems.map((item) => {
+              const Icon = item.icon;
+              const active = item.key === activeTab;
+              return (
+                <button
+                  key={item.key}
+                  className={`btn dashboard-nav-btn ${active ? "active" : ""}`}
+                  onClick={() => {
+                    if (onNavigate) onNavigate(item.key);
+                    setIsOpen(false); // Auto-close when a link is clicked
+                  }}
+                >
+                  <span className="d-flex align-items-center gap-2">
+                    <Icon size={16} />
+                    <span>{item.label}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="dashboard-sidebar-label">Platform</div>
-
-        <div className="d-grid gap-2">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            const active = item.key === activeTab;
-            return (
-              <button
-                key={item.key}
-                className={`btn dashboard-nav-btn ${active ? "active" : ""}`}
-                onClick={() => {
-                  if (onNavigate) onNavigate(item.key);
-                }}
-              >
-                <span className="d-flex align-items-center gap-2">
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ONLY the Demo User box remains here at the bottom */}
-      <div>
-        {/* 2. Add the Logout Button here */}
-        <div className="d-grid gap-2 mb-2">
-          <button 
-            className="btn dashboard-nav-btn logout-btn" 
-            onClick={() => onNavigate("logout")}
-            style={{ color: '#ff4d4d' }} 
-          >
-            <span className="d-flex align-items-center gap-2">
-              <LogOut size={16} />
-              <span>Logout</span>
-            </span>
-          </button>
-        </div>
-        
-        <div className="dashboard-user-box">
-          <div className="dashboard-user-avatar">DU</div>
-          <div>
-            <div className="dashboard-user-name">Demo User</div>
+        <div>
+          <div className="d-grid gap-2 mb-2">
+            <button 
+              className="btn dashboard-nav-btn logout-btn" 
+              onClick={() => onNavigate("logout")}
+              style={{ color: '#ff4d4d' }} 
+            >
+              <span className="d-flex align-items-center gap-2">
+                <LogOut size={16} />
+                <span>Logout</span>
+              </span>
+            </button>
+          </div>
+          
+          <div className="dashboard-user-box">
+            <div className="dashboard-user-avatar">{initials}</div>
+            <div>
+              <div className="dashboard-user-name">{displayName}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
