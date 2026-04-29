@@ -168,19 +168,11 @@ export default function DashboardPage({ onNavigate }) {
       iconClass: "summary-icon-green",
       icon: Tag,
     },
-    {
-      title: "Recurring",
-      value: String(summary.recurring_count || 0),
-      subtext: "Active subscriptions",
-      borderClass: "summary-border-orange",
-      iconClass: "summary-icon-orange",
-      icon: Repeat,
-    },
   ];
 
   return (
     <div className="dashboard-page">
-      <Sidebar onNavigate={onNavigate} activeTab="dashboard" />
+      <Sidebar onNavigate={onNavigate} activeTab="dashboard" user={user} />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="dashboard-hero">
@@ -209,7 +201,7 @@ export default function DashboardPage({ onNavigate }) {
                 {summaryCards.map((card) => {
                   const Icon = card.icon;
                   return (
-                    <div className="col-md-6 col-xl-3" key={card.title}>
+                    <div className="col-md-6 col-xl-4" key={card.title}>
                       <div className={`dashboard-summary-card ${card.borderClass}`}>
                         <div className="d-flex justify-content-between align-items-start mb-3">
                           <div>
@@ -350,7 +342,7 @@ export default function DashboardPage({ onNavigate }) {
               </div>
 
               <div className="row g-3">
-                <div className="col-md-4">
+                <div className="col-md-6">
                   <button
                     className="btn dashboard-action-card dashboard-action-purple w-100"
                     onClick={() => onNavigate("add-transaction")}
@@ -362,16 +354,7 @@ export default function DashboardPage({ onNavigate }) {
                     </span>
                   </button>
                 </div>
-                <div className="col-md-4">
-                  <button className="btn dashboard-action-card dashboard-action-blue w-100">
-                    <RefreshCcw size={18} />
-                    <span>
-                      <strong>Recurring</strong>
-                      <small>Manage subscriptions</small>
-                    </span>
-                  </button>
-                </div>
-                <div className="col-md-4">
+                <div className="col-md-6">
                   <button className="btn dashboard-action-card dashboard-action-green w-100">
                     <Tags size={18} />
                     <span>
