@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  RefreshCcw,
   Tags,
   ChevronLeft,
   ChevronRight,
@@ -8,7 +7,8 @@ import {
   DollarSign,
   BadgeDollarSign,
   Tag,
-  Repeat,
+  TrendingUp,
+  TrendingDown,
   Circle,
 } from "lucide-react";
 import Sidebar from "../components/landing/Sidebar";
@@ -138,6 +138,7 @@ export default function DashboardPage({ onNavigate }) {
   const categorySpending = data?.category_spending || [];
   const trend = data?.trend || [];
   const topCategories = categorySpending.slice(0, 3);
+  const netBalance = summary.net_balance || 0;
 
   const summaryCards = [
     {
@@ -161,11 +162,27 @@ export default function DashboardPage({ onNavigate }) {
       progress: summary.budget_used_percent || 0,
     },
     {
+      title: "Total Income",
+      value: `$${(summary.total_income || 0).toFixed(2)}`,
+      subtext: "Money received this month",
+      borderClass: "summary-border-green",
+      iconClass: "summary-icon-green",
+      icon: TrendingUp,
+    },
+    {
+      title: "Net Balance",
+      value: `${netBalance >= 0 ? "+" : "-"}$${Math.abs(netBalance).toFixed(2)}`,
+      subtext: netBalance >= 0 ? "You're in the green" : "Spending exceeds income",
+      borderClass: netBalance >= 0 ? "summary-border-green" : "summary-border-purple",
+      iconClass: netBalance >= 0 ? "summary-icon-green" : "summary-icon-purple",
+      icon: netBalance >= 0 ? TrendingUp : TrendingDown,
+    },
+    {
       title: "Categories",
       value: String(summary.category_count || 0),
       subtext: "Active spending categories",
-      borderClass: "summary-border-green",
-      iconClass: "summary-icon-green",
+      borderClass: "summary-border-orange",
+      iconClass: "summary-icon-orange",
       icon: Tag,
     },
   ];
@@ -349,8 +366,8 @@ export default function DashboardPage({ onNavigate }) {
                   >
                     <Plus size={18} />
                     <span>
-                      <strong>Add Expense</strong>
-                      <small>Record new expense</small>
+                      <strong>Add Transaction</strong>
+                      <small>Record expense or income</small>
                     </span>
                   </button>
                 </div>

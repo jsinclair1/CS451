@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import db
 from models import Transaction, Category, MonthlyBudget, BudgetLimit
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import date, timedelta
+from datetime import date
 from sqlalchemy import func
 import uuid
 
@@ -40,6 +40,18 @@ def get_dashboard():
     ).scalar() or 0
     total_spent = float(total_spent)
 
+    # ── Total income this month ─────────────────────────────────────────────
+    total_income = db.session.query(func.sum(Transaction.amount)).filter(
+        Transaction.user_id == user_id,
+        Transaction.txn_date >= month_start,
+        Transaction.txn_date < month_end,
+        Transaction.type == "income"
+    ).scalar() or 0
+    total_income = float(total_income)
+
+    # ── Net balance ─────────────────────────────────────────────────────────
+    net_balance = total_income - total_spent
+
     # ── Monthly budget total ────────────────────────────────────────────────
     monthly_budget = MonthlyBudget.query.filter_by(
         user_id=user_id,
@@ -59,14 +71,6 @@ def get_dashboard():
         user_id=user_id,
         is_active=True
     ).count()
-
-    # ── Recurring count ─────────────────────────────────────────────────────
-    recurring_count = db.session.query(func.count(Transaction.id)).filter(
-        Transaction.user_id == user_id,
-        Transaction.txn_date >= month_start,
-        Transaction.txn_date < month_end,
-        Transaction.title.ilike("%recurring%")
-    ).scalar() or 0
 
     # ── Recent 5 expenses ───────────────────────────────────────────────────
     recent = Transaction.query.filter(
@@ -113,7 +117,6 @@ def get_dashboard():
     # ── 6-month spending trend ───────────────────────────────────────────────
     trend = []
     for i in range(5, -1, -1):
-        # Go back i months from month_start
         m = month_start.month - i
         y = month_start.year
         while m <= 0:
@@ -142,11 +145,12 @@ def get_dashboard():
         "month_start": month_start.isoformat(),
         "summary": {
             "total_spent": total_spent,
+            "total_income": total_income,
+            "net_balance": net_balance,
             "total_budget": total_budget,
             "budget_used_percent": budget_used_percent,
             "budget_remaining": budget_remaining,
             "category_count": category_count,
-            "recurring_count": recurring_count
         },
         "recent_expenses": recent_expenses,
         "category_spending": categories_data,
