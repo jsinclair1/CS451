@@ -62,6 +62,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Numeric, nullable=False)
     txn_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.Text, nullable=True)
+    location = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
     category = db.relationship("Category", backref="transactions_ref", lazy=True)
