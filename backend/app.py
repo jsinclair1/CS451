@@ -3,6 +3,12 @@ from extensions import db, migrate, login_manager, bcrypt, cors, jwt
 from config import Config
 from auth.auth import auth
 from routes.transactions import transactions_bp
+<<<<<<< Updated upstream
+=======
+from routes.budgets import budgets_bp
+from routes.dashboard import dashboard_bp
+from routes.llm_chat import llm_bp
+>>>>>>> Stashed changes
 
 def create_app():
     app = Flask(__name__)
@@ -19,8 +25,15 @@ def create_app():
     # Register blueprints
     app.register_blueprint(auth)
     app.register_blueprint(transactions_bp)
+<<<<<<< Updated upstream
+=======
+    app.register_blueprint(budgets_bp)
+    app.register_blueprint(dashboard_bp)
+    app.register_blueprint(llm_bp)
+
+>>>>>>> Stashed changes
     return app
     
 app = create_app()
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5050)
