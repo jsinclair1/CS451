@@ -12,7 +12,7 @@ export default function LandingNavbar({ onNavigate }) {
           <span className="nav-logo-badge d-inline-flex align-items-center justify-content-center">
             <Wallet size={18} />
           </span>
-          <span className="brand-text">ExpenseApp</span>
+          <span className="brand-text">GeoBudget</span>
         </a>
 
         <div className="collapse navbar-collapse show">
