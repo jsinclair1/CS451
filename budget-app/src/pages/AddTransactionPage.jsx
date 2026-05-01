@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { X, Check, FileText, RefreshCcw } from "lucide-react";
+import { X, Check, TrendingDown, TrendingUp } from "lucide-react";
 import { api } from "../api";
 import PlacesAutocompleteMap from "../places_autocomplete";
-
 
 export default function AddTransactionPage({ onNavigate }) {
   const [categories, setCategories] = useState([]);
@@ -11,7 +10,7 @@ export default function AddTransactionPage({ onNavigate }) {
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
-  const [txnType, setTxnType] = useState("one-time");
+  const [txnType, setTxnType] = useState("expense");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
@@ -40,7 +39,7 @@ export default function AddTransactionPage({ onNavigate }) {
     setLoading(true);
     try {
       const res = await api.post("/api/transactions", {
-        type: "expense",
+        type: txnType,
         title: title,
         amount: parseFloat(amount),
         txn_date: txnDate,
@@ -62,7 +61,6 @@ export default function AddTransactionPage({ onNavigate }) {
       }
 
       await res.json();
-
       onNavigate("transactions");
     } catch (err) {
       console.error("Transaction submission failed:", err);
@@ -76,8 +74,8 @@ export default function AddTransactionPage({ onNavigate }) {
     <div className="add-transaction-page">
       <div className="add-transaction-topbar">
         <div>
-          <h1 className="add-transaction-title">Add New Expense</h1>
-          <p className="add-transaction-subtitle">Record a new expense</p>
+          <h1 className="add-transaction-title">Add New Transaction</h1>
+          <p className="add-transaction-subtitle">Record a new expense or income</p>
         </div>
         <button className="btn add-transaction-close" onClick={() => onNavigate("transactions")}>
           <X size={18} />
@@ -87,6 +85,51 @@ export default function AddTransactionPage({ onNavigate }) {
       <div className="add-transaction-content">
         {error && <div className="alert alert-danger mb-3">{error}</div>}
 
+        {/* ── Transaction Type Toggle ── */}
+        <div className="add-transaction-card">
+          <h5 className="add-section-title">Transaction Type</h5>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <div
+                className={`expense-type-card ${txnType === "expense" ? "active" : ""}`}
+                onClick={() => setTxnType("expense")}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="d-flex align-items-center gap-3">
+                  <div className="expense-type-icon purple">
+                    <TrendingDown size={18} />
+                  </div>
+                  <div>
+                    <div className="fw-semibold">Expense</div>
+                    <div className="expense-type-subtext">Money going out</div>
+                  </div>
+                </div>
+                {txnType === "expense" && <Check size={16} className="expense-check-icon" />}
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div
+                className={`expense-type-card ${txnType === "income" ? "active" : ""}`}
+                onClick={() => setTxnType("income")}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="d-flex align-items-center gap-3">
+                  <div className="expense-type-icon gray">
+                    <TrendingUp size={18} />
+                  </div>
+                  <div>
+                    <div className="fw-semibold">Income</div>
+                    <div className="expense-type-subtext">Money coming in</div>
+                  </div>
+                </div>
+                {txnType === "income" && <Check size={16} className="expense-check-icon" />}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Basic Information ── */}
         <div className="add-transaction-card">
           <h5 className="add-section-title">Basic Information</h5>
 
@@ -173,51 +216,6 @@ export default function AddTransactionPage({ onNavigate }) {
                 placeholder="No location selected"
               />
             </div>
-
-          </div>
-        </div>
-
-        <div className="add-transaction-card">
-          <h5 className="add-section-title">Expense Type</h5>
-
-          <div className="row g-3">
-            <div className="col-md-6">
-              <div
-                className={`expense-type-card ${txnType === "one-time" ? "active" : ""}`}
-                onClick={() => setTxnType("one-time")}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="d-flex align-items-center gap-3">
-                  <div className="expense-type-icon purple">
-                    <FileText size={18} />
-                  </div>
-                  <div>
-                    <div className="fw-semibold">One-time</div>
-                    <div className="expense-type-subtext">Single expense</div>
-                  </div>
-                </div>
-                {txnType === "one-time" && <Check size={16} className="expense-check-icon" />}
-              </div>
-            </div>
-
-            <div className="col-md-6">
-              <div
-                className={`expense-type-card ${txnType === "recurring" ? "active" : ""}`}
-                onClick={() => setTxnType("recurring")}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="d-flex align-items-center gap-3">
-                  <div className="expense-type-icon gray">
-                    <RefreshCcw size={18} />
-                  </div>
-                  <div>
-                    <div className="fw-semibold">Recurring</div>
-                    <div className="expense-type-subtext">Repeating expense</div>
-                  </div>
-                </div>
-                {txnType === "recurring" && <Check size={16} className="expense-check-icon" />}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -231,7 +229,7 @@ export default function AddTransactionPage({ onNavigate }) {
             disabled={loading}
           >
             <Check size={16} />
-            {loading ? "Saving..." : "Save Expense"}
+            {loading ? "Saving..." : txnType === "income" ? "Save Income" : "Save Expense"}
           </button>
         </div>
       </div>

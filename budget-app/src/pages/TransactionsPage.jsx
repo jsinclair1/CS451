@@ -5,6 +5,7 @@ import EditTransactionModal from "../components/EditTransactionModal";
 import { api } from "../api";
 
 export default function TransactionsPage({ onNavigate }) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -100,20 +101,20 @@ export default function TransactionsPage({ onNavigate }) {
 
   return (
     <div className="dashboard-page">
-      <Sidebar onNavigate={onNavigate} activeTab="transactions" />
+      <Sidebar onNavigate={onNavigate} activeTab="transactions" user={user} />
       <div className="dashboard-main">
         <div className="dashboard-content">
           <div className="transactions-header">
             <div>
-              <h1 className="transactions-page-title">Expenses</h1>
-              <p className="transactions-page-subtitle">Manage and track your expenses</p>
+              <h1 className="transactions-page-title">Transactions</h1>
+              <p className="transactions-page-subtitle">Manage and track your expenses and income</p>
             </div>
             <button
               className="btn btn-brand d-inline-flex align-items-center gap-2"
               onClick={() => onNavigate("add-transaction")}
             >
               <Plus size={17} />
-              Add Expense
+              Add Transaction
             </button>
           </div>
 
@@ -132,7 +133,7 @@ export default function TransactionsPage({ onNavigate }) {
                   <input
                     type="text"
                     className="form-control transactions-input"
-                    placeholder="Search expenses..."
+                    placeholder="Search transactions..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -201,6 +202,7 @@ export default function TransactionsPage({ onNavigate }) {
                     ) : (
                       transactions.map((item) => {
                         const { date, day } = formatDate(item.txn_date);
+                        const isIncome = item.type === "income";
                         return (
                           <tr key={item.id}>
                             <td>
@@ -212,9 +214,18 @@ export default function TransactionsPage({ onNavigate }) {
                                 {item.category_name}
                               </span>
                             </td>
-                            <td className="fw-medium">{item.title}</td>
+                            <td className="fw-medium">
+                              {item.title}
+                              {isIncome && (
+                                <span className="ms-2 badge" style={{ background: "#dcfce7", color: "#16a34a", fontSize: "10px" }}>
+                                  Income
+                                </span>
+                              )}
+                            </td>
                             <td className="transactions-description">{item.description || "—"}</td>
-                            <td className="fw-semibold">${parseFloat(item.amount).toFixed(2)}</td>
+                            <td className="fw-semibold" style={{ color: isIncome ? "#16a34a" : "inherit" }}>
+                              {isIncome ? "+" : "-"}${parseFloat(item.amount).toFixed(2)}
+                            </td>
                             <td>
                               <div className="d-flex align-items-center gap-2">
                                 <button
