@@ -8,6 +8,8 @@ import AddTransactionPage from "./pages/AddTransactionPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage"; 
+import SettingsPage from "./pages/SettingsPage"; 
 
 export default function App() {
   const [page, setPage] = useState("landing");
@@ -31,6 +33,9 @@ export default function App() {
   if (page === "add-transaction") return <AddTransactionPage onNavigate={setPage} />;
   if (page === "add-budget") return <AddBudgetPage onNavigate={setPage} />;
   if (page === "categories") return <CategoriesPage onNavigate={setPage} />;
+
+  if (page === "profile") return <ProfilePage onNavigate={setPage} />;
+  if (page === "settings") return <SettingsPage onNavigate={setPage} />;
 
   return <LandingPage onNavigate={setPage} />;
 }

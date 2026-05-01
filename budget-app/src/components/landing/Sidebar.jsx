@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// 1. Import Menu and X from lucide-react
-import { LayoutDashboard, Receipt, Wallet, Tags, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, Tags, LogOut, Menu, X, Settings } from "lucide-react";
+import FloatingChat from '../FloatingChat'; // <-- Add this import
 
 const sidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -82,6 +82,7 @@ export default function Sidebar({ onNavigate, activeTab, user }) {
 
         <div>
           <div className="d-grid gap-2 mb-2">
+            {/* 1. Logout Button */}
             <button 
               className="btn dashboard-nav-btn logout-btn" 
               onClick={() => onNavigate("logout")}
@@ -92,16 +93,53 @@ export default function Sidebar({ onNavigate, activeTab, user }) {
                 <span>Logout</span>
               </span>
             </button>
+
+            {/* 2. Settings Button (Sits between Logout and Profile) */}
+            <button 
+              className={`btn dashboard-nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
+              onClick={() => {
+                if (onNavigate) onNavigate("settings");
+                setIsOpen(false);
+              }}
+            >
+              <span className="d-flex align-items-center gap-2">
+                <Settings size={16} />
+                <span>Settings</span>
+              </span>
+            </button>
           </div>
           
-          <div className="dashboard-user-box">
+          {/* 3. Profile Avatar Box (Now Clickable) */}
+          <div 
+            className="dashboard-user-box"
+            onClick={() => {
+              if (onNavigate) onNavigate("profile");
+              setIsOpen(false);
+            }}
+            style={{ 
+              cursor: 'pointer',
+              padding: '0.6rem 0.45rem',
+              borderRadius: '0.65rem',
+              transition: 'background 0.2s',
+              background: activeTab === 'profile' ? 'rgba(255, 255, 255, 0.07)' : 'transparent'
+            }}
+            onMouseOver={(e) => {
+              if (activeTab !== 'profile') e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+            }}
+            onMouseOut={(e) => {
+              if (activeTab !== 'profile') e.currentTarget.style.background = 'transparent';
+            }}
+          >
             <div className="dashboard-user-avatar">{initials}</div>
             <div>
               <div className="dashboard-user-name">{displayName}</div>
+              <div style={{ fontSize: '0.75rem', color: '#7d8392', marginTop: '2px' }}>View Profile</div>
             </div>
           </div>
         </div>
       </div>
+
+      <FloatingChat /> 
     </>
   );
 }
