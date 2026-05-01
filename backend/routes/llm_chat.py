@@ -10,9 +10,8 @@ load_dotenv()
 
 llm_bp = Blueprint("llm", __name__)
 
-GEMINI_API_KEY = os.getenv("VITE_GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY)
-
 
 
 
@@ -28,22 +27,29 @@ def llm_response():
     message = data.get("message")
 
     if not message or not message.strip():
-        return jsonify({"error": "Message is required"}), 400
+        return 
     
-    latest_transactions = get_user_transactions(user_id)
+    if user_id:
+        latest_transactions = get_user_transactions(user_id)
+    else:
+        return jsonify({"error": "User not logged in"}), 400
+        
     prompt = f""" You are a financial assistant for a banking app.
                   Use only the transaction data provided below.
                   If the answer is not available from the data, say that clearly.
 
                   User question: {message}
-                  User transaction data: {latest_transactions} 
+                    User transaction data: {latest_transactions if latest_transactions else 'No info provided'}
+                  
               """
     
-    
-    response = client.models.generate_content(
-    model="gemini-3-flash-preview",
-    contents=prompt
-)
+    try:
+        response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=prompt
+    )
+    except TimeoutError:
+        return jsonify({"error": "Message is required"}), 400
 
     return jsonify({"reply": response.text}), 200
 
