@@ -61,7 +61,7 @@ export default function RegisterPage({ onBack, onSuccess }) {
                     <span className="sidebar-logo-badge d-inline-flex align-items-center justify-content-center">
                       <Wallet size={18} />
                     </span>
-                    <span className="text-white fw-bold fs-4">ExpenseApp</span>
+                    <span className="text-white fw-bold fs-4">GeoBudget</span>
                   </div>
 
                   <div className="auth-badge mb-4">
