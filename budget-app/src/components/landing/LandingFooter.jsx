@@ -10,7 +10,7 @@ export default function LandingFooter() {
               <span className="sidebar-logo-badge d-inline-flex align-items-center justify-content-center">
                 <Wallet size={18} />
               </span>
-              ExpenseApp
+              GeoBudget
             </div>
           </div>
 
