@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, X, Send } from 'lucide-react';
+import { api } from '../api';
 
 export default function FloatingChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [messages, setMessages] = useState([
     { id: 1, sender: 'ai', text: 'Hi there! I am your ExpenseApp AI assistant. How can I help you analyze your finances today?' }
   ]);
@@ -14,22 +16,40 @@ export default function FloatingChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    const trimmedInput = input.trim();
+
+    if (!trimmedInput || isSending) return;
 
     // Add user message
-    setMessages(prev => [...prev, { id: Date.now(), sender: 'user', text: input }]);
+    setMessages(prev => [...prev, { id: Date.now(), sender: 'user', text: trimmedInput }]);
     setInput('');
 
-    // Simulate AI response delay
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        id: Date.now(), 
-        sender: 'ai', 
-        text: "I am currently running in frontend-only mode! Once connected to the backend, I'll be able to analyze your spending trends and answer that." 
+    setIsSending(true);
+
+    try {
+      const response = await api.post('/api/chat', { message: trimmedInput });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Unable to get a response right now.');
+      }
+
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        sender: 'ai',
+        text: data.reply || 'I could not generate a response.'
       }]);
-    }, 1200);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        sender: 'ai',
+        text: error.message || 'Unable to get a response right now.'
+      }]);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -61,11 +81,12 @@ export default function FloatingChat() {
             <input
               type="text"
               className="form-control chat-input"
-              placeholder="Ask a question..."
+              placeholder={isSending ? 'Waiting for response...' : 'Ask a question...'}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={isSending}
             />
-            <button type="submit" className="btn chat-send-btn" disabled={!input.trim()}>
+            <button type="submit" className="btn chat-send-btn" disabled={!input.trim() || isSending}>
               <Send size={18} />
             </button>
           </form>
