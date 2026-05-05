@@ -1,76 +1,60 @@
-import {
-  BarChart3,
-  RefreshCcw,
-  SquareDashedBottomCode,
-  Zap,
-  Tags,
-  Smartphone,
-} from "lucide-react";
-
-const featureCards = [
-  {
-    title: "Interactive Dashboard",
-    text: "Beautiful charts and real-time statistics to visualize your spending patterns.",
-    icon: BarChart3,
-    boxClass: "feature-card card-lilac",
-    iconClass: "icon-purple",
-  },
-  {
-    title: "Recurring Expenses",
-    text: "Set up automatic recurring expenses that are generated based on your schedule.",
-    icon: RefreshCcw,
-    boxClass: "feature-card card-blue",
-    iconClass: "icon-blue",
-  },
-  {
-    title: "Budget Management",
-    text: "Set budgets for categories and get alerts when you're approaching limits.",
-    icon: SquareDashedBottomCode,
-    boxClass: "feature-card card-green",
-    iconClass: "icon-green",
-  },
-  {
-    title: "Real-time Updates",
-    text: "Instantly refresh your financial picture as transactions and budgets change.",
-    icon: Zap,
-    boxClass: "feature-card card-yellow",
-    iconClass: "icon-yellow",
-  },
-  {
-    title: "Category Tags",
-    text: "Organize expenses with customizable categories and clearer budget tracking.",
-    icon: Tags,
-    boxClass: "feature-card card-pink",
-    iconClass: "icon-pink",
-  },
-  {
-    title: "Mobile Responsive",
-    text: "Track expenses on any device with a polished responsive web application layout.",
-    icon: Smartphone,
-    boxClass: "feature-card card-indigo",
-    iconClass: "icon-indigo",
-  },
-];
+import React from 'react';
+import { LayoutDashboard, Tags, Wallet, Receipt } from 'lucide-react';
 
 export default function FeaturesSection() {
+  const features = [
+    {
+      title: "Dashboard",
+      desc: "Get a comprehensive overview of your financial health, 6-month trends, and monthly summaries at a single glance.",
+      icon: LayoutDashboard,
+      cardClass: "card-lilac",
+      iconClass: "icon-purple"
+    },
+    {
+      title: "Categories",
+      desc: "Organize your transactions with custom color-coded categories to clearly track exactly where your money is going.",
+      icon: Tags,
+      cardClass: "card-green",
+      iconClass: "icon-green"
+    },
+    {
+      title: "Budgets",
+      desc: "Set specific monthly limits for your categories and visually track your progress so you never overspend.",
+      icon: Wallet,
+      cardClass: "card-blue",
+      iconClass: "icon-blue"
+    },
+    {
+      title: "Expenses",
+      desc: "Log your daily transactions effortlessly and maintain an accurate, searchable history of your income and spending.",
+      icon: Receipt,
+      cardClass: "card-pink",
+      iconClass: "icon-pink"
+    }
+  ];
+
   return (
-    <section id="features" className="section-spacer bg-white">
-      <div className="container-fluid px-4 px-xl-5">
-        <div className="text-center">
-          <h2 className="section-title">Powerful Features</h2>
+    <section className="section-spacer">
+      <div className="container">
+        <div className="text-center mx-auto mb-5" style={{ maxWidth: '600px' }}>
+          <h2 className="section-title">Everything you need.</h2>
+          <p className="section-subtitle">
+            A streamlined experience built around four core features to help you master your money without the clutter.
+          </p>
         </div>
 
-        <div className="row g-4 feature-grid">
-          {featureCards.map((card) => {
-            const Icon = card.icon;
+        {/* Changed to a 2x2 grid on medium screens, and 4-across on extra-large screens */}
+        <div className="row g-4 feature-grid justify-content-center">
+          {features.map((feature, i) => {
+            const Icon = feature.icon;
             return (
-              <div className="col-md-6 col-xl-4" key={card.title}>
-                <div className={card.boxClass}>
-                  <div className={`feature-icon ${card.iconClass}`}>
-                    <Icon size={18} />
+              <div className="col-md-6 col-xl-3" key={i}>
+                <div className={`card feature-card ${feature.cardClass} h-100`}>
+                  <div className={`feature-icon ${feature.iconClass}`}>
+                    <Icon size={20} strokeWidth={2.5} />
                   </div>
-                  <h5>{card.title}</h5>
-                  <p>{card.text}</p>
+                  <h5>{feature.title}</h5>
+                  <p>{feature.desc}</p>
                 </div>
               </div>
             );

@@ -859,8 +859,8 @@ body {
 }
 
 .transactions-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(90deg, #fbbf24 0%, #d97706 100%); /* Premium Gold Gradient */
+  border-bottom: 1px solid #d97706;
   padding: 1.7rem 1.8rem;
   display: flex;
   justify-content: space-between;
@@ -871,13 +871,13 @@ body {
 .transactions-page-title {
   font-size: 2rem;
   font-weight: 800;
-  color: #1f2937;
+  color: #ffffff; /* Keeping text white for contrast */
   margin: 0;
 }
 
 .transactions-page-subtitle {
   margin: 0.25rem 0 0;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .transactions-body {
@@ -1699,4 +1699,58 @@ body {
     width: calc(100vw - 3rem);
     height: 400px;
   }
+}
+
+/* ===== Dark Mode Overrides ===== */
+[data-bs-theme="dark"] body {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .dashboard-main,
+[data-bs-theme="dark"] .dashboard-page,
+[data-bs-theme="dark"] .dashboard-content {
+  background-color: #0f172a;
+}
+
+[data-bs-theme="dark"] .dashboard-panel,
+[data-bs-theme="dark"] .dashboard-sidebar {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .dashboard-panel-title,
+[data-bs-theme="dark"] .dashboard-user-name {
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .dashboard-nav-btn {
+  color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .dashboard-nav-btn:hover,
+[data-bs-theme="dark"] .bg-light {
+  background-color: #334155 !important;
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .text-secondary {
+  color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .border-bottom {
+  border-bottom-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+  background-color: #0f172a;
+  color: #f8fafc;
 }
