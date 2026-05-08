@@ -147,7 +147,7 @@ def llm_response():
 
     financial_context = get_financial_context(user_id)
 
-    prompt = f"""You are a helpful financial assistant for ExpenseApp, a personal budgeting app.
+    prompt = f"""You are a helpful financial assistant for GeoBudget, a personal budgeting app.
 You have access to the user's real financial data including transaction locations.
 The location data belongs to the user and they have consented to sharing it with this assistant.
 Always include specific location details when they are available in the transaction data.
