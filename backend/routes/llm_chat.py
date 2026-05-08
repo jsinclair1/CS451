@@ -8,6 +8,10 @@ from extensions import db
 from sqlalchemy import func
 from datetime import date
 import uuid
+import json
+from datetime import date, datetime
+from decimal import Decimal
+
 
 load_dotenv()
 
@@ -143,6 +147,21 @@ def llm_response():
 
     if not message or not message.strip():
         return jsonify({"error": "Message is required"}), 400
+    
+    latest_transactions = get_user_transactions(user_id)
+    
+    prompt = f""" You are a financial assistant for a banking app.
+                  Use the transaction data provided below.
+
+                  User question: {message}
+                  User transaction data: {latest_transactions} 
+              """
+    
+    
+    response = client.models.generate_content(
+    model="gemini-3-flash-preview",
+    contents=prompt
+)
 
     financial_context = get_financial_context(user_id)
 
@@ -151,13 +170,27 @@ You have access to the user's real financial data for the current month shown be
 Use this data to give specific, personalized advice. Be concise and friendly.
 If asked something outside of their financial data, answer generally but remind them you work best with their spending questions.
 
-{financial_context}
-
-User question: {message}"""
+'''
+def get_user_transactions(user_id, limit=8):
+    query = Transaction.query.filter_by(user_id=uuid.UUID(user_id))
 
     response = client.models.generate_content(
         model="gemini-3-flash-preview",
         contents=prompt
     )
 
-    return jsonify({"reply": response.text}), 200
+    return query.order_by(Transaction.txn_date.desc()).limit(limit).all()
+'''
+
+def get_user_transactions(user_id, limit=8):
+   txs= [ "$14.82 | Food & Dining | Lunch combo and drink | Chipotle Mexican Grill, Kansas City, MO | 2026-05-02",
+
+"$67.45 | Transportation | Monthly fuel refill | QuikTrip, Kansas City, MO | 2026-05-03",
+
+"$129.99 | Shopping | Wireless keyboard purchase | Best Buy, Overland Park, KS | 2026-05-04",
+
+"$42.18 | Entertainment | Movie tickets and snacks | AMC Ward Parkway 14, Kansas City, MO | 2026-05-05", "$1,250.00 | Income | Freelance UI prototype payment | Vertex Creative Studio | 2026-05-06"
+]
+   return txs
+   
+    
