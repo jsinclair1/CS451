@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../components/landing/Sidebar';
-import { Bell, Lock, Globe, Moon } from 'lucide-react';
+import { Lock, Moon, Check, X } from 'lucide-react';
+import { api } from '../api';
 
 export default function SettingsPage({ onNavigate }) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // --- Dark Mode State & Logic ---
+  // ── Dark Mode ──────────────────────────────────────────────────────────────
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
@@ -20,25 +21,71 @@ export default function SettingsPage({ onNavigate }) {
     }
   }, [isDarkMode]);
 
-  // --- Password Form State & Logic ---
+  // ── Change Password ────────────────────────────────────────────────────────
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
-  const [passwordMsg, setPasswordMsg] = useState({ type: '', text: '' });
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pwError, setPwError] = useState("");
+  const [pwSuccess, setPwSuccess] = useState("");
+  const [pwLoading, setPwLoading] = useState(false);
 
-  const handlePasswordSubmit = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
-    if (passwords.new !== passwords.confirm) {
-      setPasswordMsg({ type: 'danger', text: 'New passwords do not match!' });
+    setPwError("");
+    setPwSuccess("");
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPwError("All fields are required.");
       return;
     }
-    
-    // Simulate API Call to backend
-    setPasswordMsg({ type: 'success', text: 'Password successfully updated!' });
-    setTimeout(() => {
-      setShowPasswordForm(false);
-      setPasswords({ current: '', new: '', confirm: '' });
-      setPasswordMsg({ type: '', text: '' });
-    }, 2000);
+
+    if (newPassword !== confirmPassword) {
+      setPwError("New passwords do not match.");
+      return;
+    }
+
+    setPwLoading(true);
+    try {
+      const res = await api.put("/api/user/password", {
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.requirements) {
+          setPwError(`Password must contain: ${data.requirements.join(", ")}`);
+        } else {
+          setPwError(data.error || "Failed to change password.");
+        }
+        return;
+      }
+
+      setPwSuccess("Password changed successfully.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setTimeout(() => {
+        setShowPasswordForm(false);
+        setPwSuccess("");
+      }, 2000);
+    } catch (err) {
+      setPwError("Unable to connect to the server.");
+    } finally {
+      setPwLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowPasswordForm(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPwError("");
+    setPwSuccess("");
   };
 
   return (
@@ -46,9 +93,11 @@ export default function SettingsPage({ onNavigate }) {
       <Sidebar onNavigate={onNavigate} activeTab="settings" user={user} />
       <div className="dashboard-main">
         <div className="dashboard-content">
-          <div className="dashboard-hero" style={{ background: 'linear-gradient(90deg, #3b82f6 0%, #2dd4bf 100%)' }}>
-            <h1 className="dashboard-hero-title">Settings</h1>
-            <p className="dashboard-hero-subtitle">Customize your app preferences</p>
+          <div className="dashboard-hero">
+            <div>
+              <h1 className="dashboard-hero-title">Settings</h1>
+              <p className="dashboard-hero-subtitle">Customize your app preferences</p>
+            </div>
           </div>
 
           <div className="row g-4 m-0 p-4">
@@ -56,7 +105,7 @@ export default function SettingsPage({ onNavigate }) {
               <div className="dashboard-panel">
                 <h5 className="dashboard-panel-title mb-4">Preferences</h5>
 
-                {/* Dark Mode Toggle */}
+                {/* ── Dark Mode Toggle ── */}
                 <div className="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                   <div className="d-flex align-items-center gap-3">
                     <div className="p-2 bg-light rounded"><Moon size={20} className="text-primary" /></div>
@@ -66,79 +115,98 @@ export default function SettingsPage({ onNavigate }) {
                     </div>
                   </div>
                   <div className="form-check form-switch fs-4">
-                    <input 
-                      className="form-check-input cursor-pointer" 
-                      type="checkbox" 
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
                       checked={isDarkMode}
                       onChange={(e) => setIsDarkMode(e.target.checked)}
                     />
                   </div>
                 </div>
 
-                {/* Change Password Section */}
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <div className="d-flex align-items-center gap-3">
-                    <div className="p-2 bg-light rounded"><Lock size={20} className="text-primary" /></div>
-                    <div>
-                      <div className="fw-bold">Change Password</div>
-                      <div className="small text-secondary">Update your account security</div>
+                {/* ── Change Password ── */}
+                <div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="p-2 bg-light rounded"><Lock size={20} className="text-primary" /></div>
+                      <div>
+                        <div className="fw-bold">Change Password</div>
+                        <div className="small text-secondary">Update your account security</div>
+                      </div>
                     </div>
-                  </div>
-                  <button 
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => setShowPasswordForm(!showPasswordForm)}
-                  >
-                    {showPasswordForm ? 'Cancel' : 'Update'}
-                  </button>
-                </div>
-
-                {/* Expanding Password Form */}
-                {showPasswordForm && (
-                  <div className="mt-3 p-4 bg-light rounded border">
-                    {passwordMsg.text && (
-                      <div className={`alert alert-${passwordMsg.type} py-2`}>
-                        {passwordMsg.text}
-                      </div>
+                    {!showPasswordForm && (
+                      <button
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={() => setShowPasswordForm(true)}
+                      >
+                        Update
+                      </button>
                     )}
-                    <form onSubmit={handlePasswordSubmit}>
-                      <div className="mb-3">
-                        <label className="form-label small fw-bold">Current Password</label>
-                        <input 
-                          type="password" 
-                          className="form-control" 
-                          required
-                          value={passwords.current}
-                          onChange={(e) => setPasswords({...passwords, current: e.target.value})}
-                        />
-                      </div>
-                      <div className="row">
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label small fw-bold">New Password</label>
-                          <input 
-                            type="password" 
-                            className="form-control" 
-                            required
-                            value={passwords.new}
-                            onChange={(e) => setPasswords({...passwords, new: e.target.value})}
-                          />
-                        </div>
-                        <div className="col-md-6 mb-3">
-                          <label className="form-label small fw-bold">Confirm New Password</label>
-                          <input 
-                            type="password" 
-                            className="form-control" 
-                            required
-                            value={passwords.confirm}
-                            onChange={(e) => setPasswords({...passwords, confirm: e.target.value})}
-                          />
-                        </div>
-                      </div>
-                      <div className="text-end">
-                        <button type="submit" className="btn btn-primary">Save New Password</button>
-                      </div>
-                    </form>
                   </div>
-                )}
+
+                  {showPasswordForm && (
+                    <div className="mt-4 pt-3 border-top">
+                      {pwError && <div className="alert alert-danger py-2 mb-3">{pwError}</div>}
+                      {pwSuccess && <div className="alert alert-success py-2 mb-3">{pwSuccess}</div>}
+
+                      <form onSubmit={handleChangePassword}>
+                        <div className="mb-3">
+                          <label className="form-label transactions-label">Current Password</label>
+                          <input
+                            type="password"
+                            className="form-control transactions-input"
+                            placeholder="••••••••"
+                            required
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                          />
+                        </div>
+                        <div className="row">
+                          <div className="col-md-6 mb-3">
+                            <label className="form-label transactions-label">New Password</label>
+                            <input
+                              type="password"
+                              className="form-control transactions-input"
+                              placeholder="••••••••"
+                              required
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                          </div>
+                          <div className="col-md-6 mb-3">
+                            <label className="form-label transactions-label">Confirm New Password</label>
+                            <input
+                              type="password"
+                              className="form-control transactions-input"
+                              placeholder="••••••••"
+                              required
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-end gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+                            onClick={handleCancel}
+                          >
+                            <X size={15} />
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-brand d-inline-flex align-items-center gap-2"
+                            disabled={pwLoading}
+                          >
+                            <Check size={15} />
+                            {pwLoading ? "Saving..." : "Save Password"}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                </div>
 
               </div>
             </div>

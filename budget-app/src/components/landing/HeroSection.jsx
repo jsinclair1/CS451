@@ -4,18 +4,14 @@ export default function HeroSection({ onNavigate }) {
       <div className="container-fluid px-4 px-xl-5">
         <div className="row align-items-center g-5">
           <div className="col-lg-5 col-xl-4">
-            <div>
-
-            </div>
-
             <h1 className="hero-title mb-4">Take Control of Your Finances Today</h1>
 
             <div className="d-flex flex-wrap gap-3 mb-5">
               <button className="btn btn-light-hero" onClick={() => onNavigate("register")}>
                 Register
               </button>
-              <button className="btn btn-outline-hero" onClick={() => onNavigate("dashboard")}>
-                Learn More
+              <button className="btn btn-outline-hero" onClick={() => onNavigate("login")}>
+                Login
               </button>
             </div>
           </div>

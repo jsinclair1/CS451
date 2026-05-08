@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Receipt, Wallet, Tags, LogOut, Menu, X, Settings } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, Tags, LogOut, Menu, X, Settings, BarChart2 } from "lucide-react";
 import FloatingChat from '../FloatingChat'; // <-- Add this import
 
 const sidebarItems = [
@@ -7,6 +7,7 @@ const sidebarItems = [
   { key: "categories", label: "Categories", icon: Tags },
   { key: "budgets", label: "Budgets", icon: Wallet },
   { key: "transactions", label: "Expenses", icon: Receipt },
+  { key: "reports", label: "Reports", icon: BarChart2 },
 ];
 
 export default function Sidebar({ onNavigate, activeTab, user }) {
@@ -85,7 +86,11 @@ export default function Sidebar({ onNavigate, activeTab, user }) {
             {/* 1. Logout Button */}
             <button 
               className="btn dashboard-nav-btn logout-btn" 
-              onClick={() => onNavigate("logout")}
+              onClick={() => {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("user");
+                onNavigate("landing");
+              }}
               style={{ color: '#ff4d4d' }} 
             >
               <span className="d-flex align-items-center gap-2">

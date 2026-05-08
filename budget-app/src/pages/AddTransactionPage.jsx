@@ -180,7 +180,9 @@ export default function AddTransactionPage({ onNavigate }) {
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
-              <div className="add-category-link">Don&apos;t see your category? Create one</div>
+              <div className="add-category-link" style={{ cursor: "pointer" }} onClick={() => onNavigate("categories")}>
+                Don&apos;t see your category? Create one
+              </div>
             </div>
 
             <div className="col-12">

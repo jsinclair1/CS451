@@ -95,8 +95,7 @@ def get_transactions():
                 "title": t.title,
                 "amount": float(t.amount),
                 "txn_date": t.txn_date.isoformat(),
-                "description": t.description,
-                "location": t.location if t.location else None,
+                "description": t.description
             } for t in paginated.items
         ],
         "total": paginated.total,
@@ -118,7 +117,6 @@ def create_transaction():
     title = data.get("title", "")
     description = data.get("description") or None
     txn_type = data.get("type", "expense")
-    location = data.get("location")
 
     if txn_type not in ["income", "expense"]:
         txn_type = "expense"
@@ -137,8 +135,7 @@ def create_transaction():
         title=title,
         amount=amount,
         txn_date=datetime.strptime(txn_date, "%Y-%m-%d").date(),
-        description=description,
-        location=location
+        description=description
     )
     db.session.add(transaction)
     db.session.commit()
@@ -182,8 +179,6 @@ def update_transaction(transaction_id):
         if txn_type not in ["income", "expense"]:
             txn_type = "expense"
         transaction.type = txn_type
-    if "location" in data:
-        transaction.location = data["location"]
 
     db.session.commit()
 
@@ -207,3 +202,24 @@ def delete_transaction(transaction_id):
     db.session.commit()
 
     return jsonify({"message": "Transaction deleted"}), 200
+
+
+@transactions_bp.route("/api/categories/<category_id>", methods=["DELETE"])
+@jwt_required()
+def delete_category(category_id):
+    user_id = get_jwt_identity()
+
+    category = Category.query.filter_by(
+        id=uuid.UUID(category_id),
+        user_id=uuid.UUID(user_id)
+    ).first()
+
+    if not category:
+        return jsonify({"error": "Category not found"}), 404
+
+    # Soft delete — mark as inactive instead of removing
+    # so existing transactions still reference it
+    category.is_active = False
+    db.session.commit()
+
+    return jsonify({"message": "Category deleted"}), 200
