@@ -93,9 +93,13 @@ def get_financial_context(user_id):
             })
 
     # ── Recent 10 transactions ─────────────────────────────────────────────
+    db.session.expire_all()
     recent = Transaction.query.filter(
         Transaction.user_id == uid
     ).order_by(Transaction.txn_date.desc()).limit(10).all()
+
+    for t in recent:
+    print(f"DEBUG: {t.title} | location: {t.location}")
 
     recent_transactions = [
         {
