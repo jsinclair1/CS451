@@ -104,6 +104,7 @@ def get_financial_context(user_id):
             "amount": float(t.amount),
             "type": t.type,
             "category": t.category.name if t.category else "Unknown"
+            "location": t.location or None
         }
         for t in recent
     ]
@@ -124,7 +125,7 @@ BUDGET PERFORMANCE:
 {chr(10).join([f"- {b['category']}: ${b['spent']:.2f} of ${b['limit']:.2f} limit ({b['status']})" for b in budget_info]) or "No budgets set"}
 
 RECENT TRANSACTIONS (last 10):
-{chr(10).join([f"- {t['date']} | {t['title']} | ${t['amount']:.2f} | {t['type']} | {t['category']}" for t in recent_transactions]) or "No recent transactions"}
+{chr(10).join([f"- {t['date']} | {t['title']} | ${t['amount']:.2f} | {t['type']} | {t['category']}{' | ' + t['location'] if t['location'] else ''}" for t in recent_transactions]) or "No recent transactions"}
 """
     return context.strip()
 
