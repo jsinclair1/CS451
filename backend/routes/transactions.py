@@ -117,6 +117,9 @@ def create_transaction():
     title = data.get("title", "")
     description = data.get("description") or None
     txn_type = data.get("type", "expense")
+    location_name = data.get("location_name")
+    location_address = data.get("location_address")
+    location = f"{location_name} - {location_address}" if location_name else data.get("location")
 
     if txn_type not in ["income", "expense"]:
         txn_type = "expense"
@@ -135,7 +138,8 @@ def create_transaction():
         title=title,
         amount=amount,
         txn_date=datetime.strptime(txn_date, "%Y-%m-%d").date(),
-        description=description
+        description=description,
+        location=location
     )
     db.session.add(transaction)
     db.session.commit()

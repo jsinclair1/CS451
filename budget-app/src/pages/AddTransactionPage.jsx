@@ -29,12 +29,16 @@ export default function AddTransactionPage({ onNavigate }) {
   }, []);
 
   const handleSubmit = async () => {
-    setError("");
+      setError("");
 
-    if (!amount || !txnDate || !categoryId) {
-      setError("Amount, date, and category are required.");
-      return;
-    }
+      if (!amount || !txnDate || !categoryId) {
+        setError("Amount, date, and category are required.");
+        return;
+      }
+
+      console.log("Location object:", location);  // add this
+
+      setLoading(true);
 
     setLoading(true);
     try {
