@@ -95,8 +95,9 @@ export default function TransactionsPage({ onNavigate }) {
   ];
 
   const getCategoryColor = (categoryId) => {
-    const index = categories.findIndex((c) => c.id === categoryId);
-    return chipColors[index % chipColors.length] || "chip-blue";
+    if (!categoryId) return "chip-blue";
+    const hash = parseInt(categoryId.slice(-4), 16);
+    return chipColors[hash % chipColors.length];
   };
 
   return (

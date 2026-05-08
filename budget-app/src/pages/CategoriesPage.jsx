@@ -3,10 +3,15 @@ import { Trash2 } from "lucide-react";
 import Sidebar from "../components/landing/Sidebar";
 import { api } from "../api";
 
-const CATEGORY_COLORS = [
-  "#6366f1", "#f97316", "#ec4899", "#ef4444",
-  "#f59e0b", "#8b5cf6", "#3b82f6", "#9333ea", "#22c55e"
-];
+
+const getColorFromId = (id) => {
+  const CATEGORY_COLORS = [
+    "#6366f1", "#f97316", "#ec4899", "#ef4444",
+    "#f59e0b", "#8b5cf6", "#3b82f6", "#9333ea", "#22c55e"
+  ];
+  const hash = parseInt((id || "0").slice(-4), 16);
+  return CATEGORY_COLORS[hash % CATEGORY_COLORS.length];
+};
 
 export default function CategoriesPage({ onNavigate }) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -165,11 +170,11 @@ export default function CategoriesPage({ onNavigate }) {
                             <div className="d-flex align-items-center gap-3">
                               <div
                                 className="cat-icon-wrapper"
-                                style={{ backgroundColor: `${CATEGORY_COLORS[i % CATEGORY_COLORS.length]}20` }}
+                                style={{ backgroundColor: `${getColorFromId(cat.id)}20` }}
                               >
                                 <div
                                   className="cat-icon-dot"
-                                  style={{ backgroundColor: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }}
+                                  style={{ backgroundColor: getColorFromId(cat.id) }}
                                 ></div>
                               </div>
                               <div className="fw-bold">{cat.name}</div>

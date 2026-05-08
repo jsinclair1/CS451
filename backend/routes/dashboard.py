@@ -75,8 +75,10 @@ def get_dashboard():
     # ── Recent 5 expenses ───────────────────────────────────────────────────
     recent = Transaction.query.filter(
         Transaction.user_id == user_id,
-        Transaction.type == "expense"
-    ).order_by(Transaction.txn_date.desc()).limit(5).all()
+        Transaction.type == "expense",
+        Transaction.txn_date >= month_start,
+        Transaction.txn_date < month_end
+    ).order_by(Transaction.txn_date.desc()).limit(3).all()
 
     recent_expenses = [
         {
