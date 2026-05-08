@@ -44,7 +44,7 @@ export default function Sidebar({ onNavigate, activeTab, user }) {
           <div className="d-flex justify-content-between align-items-center px-1 mb-3">
             <div className="d-flex align-items-center gap-2 dashboard-brand" style={{ padding: '0.4rem 0' }}>
               <div className="dashboard-brand-badge">💳</div>
-              <span>ExpenseApp</span>
+              <span>GeoBudget</span>
             </div>
             <button
               className="btn p-1 d-flex text-secondary"

@@ -98,7 +98,7 @@ export default function RegisterPage({ onBack, onSuccess }) {
                 </h2>
 
                 <p className="text-secondary mb-4 auth-form-subtitle">
-                  Create your ExpenseApp account.
+                  Create your GeoBudget account.
                 </p>
 
                 {error && (
