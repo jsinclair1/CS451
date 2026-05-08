@@ -5,6 +5,10 @@ from flask import Blueprint, request, jsonify
 from models import Transaction, MonthlyBudget
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import uuid
+import json
+from datetime import date, datetime
+from decimal import Decimal
+
 
 load_dotenv()
 
@@ -33,7 +37,7 @@ def llm_response():
     latest_transactions = get_user_transactions(user_id)
     prompt = f""" You are a financial assistant for a banking app.
                   Use only the transaction data provided below.
-                  If the answer is not available from the data, say that clearly.
+                  If the answer is not available from the data, provide general budgeting advice.
 
                   User question: {message}
                   User transaction data: {latest_transactions} 
@@ -48,7 +52,7 @@ def llm_response():
     return jsonify({"reply": response.text}), 200
 
 
-def get_user_transactions(user_id, limit=3):
+def get_user_transactions(user_id, limit=8):
     query = Transaction.query.filter_by(user_id=uuid.UUID(user_id))
 
     located = query.filter(Transaction.location.isnot(None)).order_by(Transaction.txn_date.desc()).limit(limit).all()
@@ -56,3 +60,18 @@ def get_user_transactions(user_id, limit=3):
         return located
 
     return query.order_by(Transaction.txn_date.desc()).limit(limit).all()
+
+
+def serialize_transaction(txn):
+    payload = {}
+    for column in txn.__table__.columns:
+        value = getattr(txn, column.name)
+
+        if isinstance(value, (uuid.UUID, datetime, date)):
+            payload[column.name] = value.isoformat() if hasattr(value, "isoformat") else str(value)
+        elif isinstance(value, Decimal):
+            payload[column.name] = float(value)
+        else:
+            payload[column.name] = value
+
+    return payload
