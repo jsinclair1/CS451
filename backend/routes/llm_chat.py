@@ -35,6 +35,7 @@ def llm_response():
         return jsonify({"error": "Message is required"}), 400
     
     latest_transactions = get_user_transactions(user_id)
+    
     prompt = f""" You are a financial assistant for a banking app.
                   Use only the transaction data provided below.
                   If the answer is not available from the data, provide general budgeting advice.
@@ -51,7 +52,7 @@ def llm_response():
 
     return jsonify({"reply": response.text}), 200
 
-
+'''
 def get_user_transactions(user_id, limit=8):
     query = Transaction.query.filter_by(user_id=uuid.UUID(user_id))
 
@@ -60,18 +61,17 @@ def get_user_transactions(user_id, limit=8):
         return located
 
     return query.order_by(Transaction.txn_date.desc()).limit(limit).all()
+'''
 
+def get_user_transactions(user_id, limit=8):
+   txs= [ "$14.82 | Food & Dining | Lunch combo and drink | Chipotle Mexican Grill, Kansas City, MO | 2026-05-02",
 
-def serialize_transaction(txn):
-    payload = {}
-    for column in txn.__table__.columns:
-        value = getattr(txn, column.name)
+"$67.45 | Transportation | Monthly fuel refill | QuikTrip, Kansas City, MO | 2026-05-03",
 
-        if isinstance(value, (uuid.UUID, datetime, date)):
-            payload[column.name] = value.isoformat() if hasattr(value, "isoformat") else str(value)
-        elif isinstance(value, Decimal):
-            payload[column.name] = float(value)
-        else:
-            payload[column.name] = value
+"$129.99 | Shopping | Wireless keyboard purchase | Best Buy, Overland Park, KS | 2026-05-04",
 
-    return payload
+"$42.18 | Entertainment | Movie tickets and snacks | AMC Ward Parkway 14, Kansas City, MO | 2026-05-05", "$1,250.00 | Income | Freelance UI prototype payment | Vertex Creative Studio | 2026-05-06"
+]
+   return txs
+   
+    
