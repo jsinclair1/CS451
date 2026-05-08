@@ -37,8 +37,7 @@ def llm_response():
     latest_transactions = get_user_transactions(user_id)
     
     prompt = f""" You are a financial assistant for a banking app.
-                  Use only the transaction data provided below.
-                  If the answer is not available from the data, provide general budgeting advice.
+                  Use the transaction data provided below.
 
                   User question: {message}
                   User transaction data: {latest_transactions} 
