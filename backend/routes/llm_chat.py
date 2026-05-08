@@ -8,10 +8,6 @@ from extensions import db
 from sqlalchemy import func
 from datetime import date
 import uuid
-import json
-from datetime import date, datetime
-from decimal import Decimal
-
 
 load_dotenv()
 
@@ -107,8 +103,7 @@ def get_financial_context(user_id):
             "title": t.title or t.description or "Untitled",
             "amount": float(t.amount),
             "type": t.type,
-            "category": t.category.name if t.category else "Unknown",
-            "location": t.location or None
+            "category": t.category.name if t.category else "Unknown"
         }
         for t in recent
     ]
@@ -129,7 +124,7 @@ BUDGET PERFORMANCE:
 {chr(10).join([f"- {b['category']}: ${b['spent']:.2f} of ${b['limit']:.2f} limit ({b['status']})" for b in budget_info]) or "No budgets set"}
 
 RECENT TRANSACTIONS (last 10):
-{chr(10).join([f"- {t['date']} | {t['title']} | ${t['amount']:.2f} | {t['type']} | {t['category']}{' | ' + t['location'] if t['location'] else ''}" for t in recent_transactions]) or "No recent transactions"}
+{chr(10).join([f"- {t['date']} | {t['title']} | ${t['amount']:.2f} | {t['type']} | {t['category']}" for t in recent_transactions]) or "No recent transactions"}
 """
     return context.strip()
 
@@ -147,21 +142,6 @@ def llm_response():
 
     if not message or not message.strip():
         return jsonify({"error": "Message is required"}), 400
-    
-    latest_transactions = get_user_transactions(user_id)
-    
-    prompt = f""" You are a financial assistant for a banking app.
-                  Use the transaction data provided below.
-
-                  User question: {message}
-                  User transaction data: {latest_transactions} 
-              """
-    
-    
-    response = client.models.generate_content(
-    model="gemini-3-flash-preview",
-    contents=prompt
-)
 
     financial_context = get_financial_context(user_id)
 
@@ -170,27 +150,13 @@ You have access to the user's real financial data for the current month shown be
 Use this data to give specific, personalized advice. Be concise and friendly.
 If asked something outside of their financial data, answer generally but remind them you work best with their spending questions.
 
-'''
-def get_user_transactions(user_id, limit=8):
-    query = Transaction.query.filter_by(user_id=uuid.UUID(user_id))
+{financial_context}
+
+User question: {message}"""
 
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-2.0-flash",
         contents=prompt
     )
 
-    return query.order_by(Transaction.txn_date.desc()).limit(limit).all()
-'''
-
-def get_user_transactions(user_id, limit=8):
-   txs= [ "$14.82 | Food & Dining | Lunch combo and drink | Chipotle Mexican Grill, Kansas City, MO | 2026-05-02",
-
-"$67.45 | Transportation | Monthly fuel refill | QuikTrip, Kansas City, MO | 2026-05-03",
-
-"$129.99 | Shopping | Wireless keyboard purchase | Best Buy, Overland Park, KS | 2026-05-04",
-
-"$42.18 | Entertainment | Movie tickets and snacks | AMC Ward Parkway 14, Kansas City, MO | 2026-05-05", "$1,250.00 | Income | Freelance UI prototype payment | Vertex Creative Studio | 2026-05-06"
-]
-   return txs
-   
-    
+    return jsonify({"reply": response.text}), 200
