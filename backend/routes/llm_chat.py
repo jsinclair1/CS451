@@ -98,9 +98,6 @@ def get_financial_context(user_id):
         Transaction.user_id == uid
     ).order_by(Transaction.txn_date.desc()).limit(10).all()
 
-    for t in recent:
-    print(f"DEBUG: {t.title} | location: {t.location}")
-
     recent_transactions = [
         {
             "date": t.txn_date.strftime("%b %d"),
@@ -151,7 +148,9 @@ def llm_response():
     financial_context = get_financial_context(user_id)
 
     prompt = f"""You are a helpful financial assistant for ExpenseApp, a personal budgeting app.
-You have access to the user's real financial data for the current month shown below.
+You have access to the user's real financial data including transaction locations.
+The location data belongs to the user and they have consented to sharing it with this assistant.
+Always include specific location details when they are available in the transaction data.
 Use this data to give specific, personalized advice. Be concise and friendly.
 If asked something outside of their financial data, answer generally but remind them you work best with their spending questions.
 
