@@ -132,7 +132,7 @@ RECENT TRANSACTIONS (last 10):
 
 SAMPLE LOCATION-BASED TRANSACTIONS (for demonstration):
 - May 07 | Grocery Shopping | $145.00 | expense | Groceries | Walmart Supercenter - 8551 N Boardwalk Ave, Kansas City, MO 64154
-- May 07 | Coffee | $6.50 | expense | Food | Starbucks - 4707 Broadway Blvd, Kansas City, MO 64112
+- May 08 | Coffee | $6.50 | expense | Food | Starbucks - 4707 Broadway Blvd, Kansas City, MO 64112
 - May 06 | Gas | $67.00 | expense | Transport | QuikTrip - 7200 NW 83rd St, Kansas City, MO 64152
 - May 05 | Lunch | $14.82 | expense | Food | Chipotle Mexican Grill - 4309 Main St, Kansas City, MO 64111
 - May 04 | Electronics | $129.99 | expense | Shopping | Best Buy - 8600 Ward Pkwy, Kansas City, MO 64114
