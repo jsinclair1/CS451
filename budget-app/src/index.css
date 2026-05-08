@@ -1754,3 +1754,16 @@ body {
   background-color: #0f172a;
   color: #f8fafc;
 }
+
+.bgp-card-header-red {
+  background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+}
+
+.bgp-progress-red {
+  background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+}
+
+.bgp-status-red {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+}

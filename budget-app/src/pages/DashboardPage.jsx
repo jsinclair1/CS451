@@ -10,10 +10,15 @@ import {
 import Sidebar from "../components/landing/Sidebar";
 import { api } from "../api";
 
-const CATEGORY_COLORS = [
-  "#6366f1", "#f97316", "#ec4899", "#ef4444",
-  "#f59e0b", "#8b5cf6", "#3b82f6", "#9333ea", "#22c55e"
-];
+
+const getColorFromId = (id) => {
+  const CATEGORY_COLORS = [
+    "#6366f1", "#f97316", "#ec4899", "#ef4444",
+    "#f59e0b", "#8b5cf6", "#3b82f6", "#9333ea", "#22c55e"
+  ];
+  const hash = parseInt((id || "0").slice(-4), 16);
+  return CATEGORY_COLORS[hash % CATEGORY_COLORS.length];
+};
 
 export default function DashboardPage({ onNavigate }) {
   const today = new Date();
@@ -75,7 +80,7 @@ export default function DashboardPage({ onNavigate }) {
           key={cat.category_id}
           cx={cx} cy={cy} r={r}
           fill="none"
-          stroke={CATEGORY_COLORS[i % CATEGORY_COLORS.length]}
+          stroke={getColorFromId(cat.category_id)}
           strokeWidth={stroke}
           strokeDasharray={`${dash} ${circ - dash}`}
           strokeDashoffset={-offset}
@@ -246,7 +251,7 @@ export default function DashboardPage({ onNavigate }) {
                           <div key={cat.category_id} className="dashboard-legend-item">
                             <span
                               className="dashboard-legend-dot"
-                              style={{ background: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }}
+                              style={{ background: getColorFromId(cat.category_id) }}
                             ></span>
                             <span>{cat.category_name}</span>
                           </div>
@@ -263,11 +268,11 @@ export default function DashboardPage({ onNavigate }) {
                               <div
                                 className="dashboard-category-icon"
                                 style={{
-                                  background: `${CATEGORY_COLORS[i]}18`,
-                                  color: CATEGORY_COLORS[i]
+                                  background: `${getColorFromId(item.category_id)}18`,
+                                  color: getColorFromId(item.category_id)
                                 }}
                               >
-                                <Circle size={10} fill={CATEGORY_COLORS[i]} stroke={CATEGORY_COLORS[i]} />
+                                <Circle size={10} fill={getColorFromId(item.category_id)} stroke={getColorFromId(item.category_id)} />
                               </div>
                               <div>
                                 <div className="fw-semibold">{item.category_name}</div>
@@ -302,11 +307,11 @@ export default function DashboardPage({ onNavigate }) {
                           <div className="d-flex align-items-center gap-3">
                             <div
                               className="dashboard-expense-icon"
-                              style={{ background: `${CATEGORY_COLORS[i % CATEGORY_COLORS.length]}20` }}
+                              style={{ background: `${getColorFromId(item.category_id)}20` }}
                             >
                               <span style={{
                                 width: 8, height: 8, borderRadius: "50%",
-                                background: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
+                                background: getColorFromId(item.category_id),
                                 display: "inline-block"
                               }}></span>
                             </div>
