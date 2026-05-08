@@ -104,7 +104,7 @@ def get_financial_context(user_id):
             "title": t.title or t.description or "Untitled",
             "amount": float(t.amount),
             "type": t.type,
-            "category": t.category.name if t.category else "Unknown"
+            "category": t.category.name if t.category else "Unknown",
             "location": t.location or None
         }
         for t in recent
